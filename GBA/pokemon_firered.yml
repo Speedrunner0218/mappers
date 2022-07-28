@@ -60,10 +60,44 @@ macros:
       Speed: { offset: 94, type: "int", size: 2 }
       SpecialAttack: { offset: 96, type: "int", size: 2 }
       SpecialDefense: { offset: 98, type: "int", size: 2 }
+  
+  battleStructure: #there may be data in this structure before the species value
+      species: { offset: 0, type: "reference", size: 2, reference: "pokemon" }
+      Attack: { offset: 2, type: "int", size: 2 }
+      Defense: { offset: 4, type: "int", size: 2 }
+      Speed: { offset: 6, type: "int", size: 2 }
+      SpecialAttack: { offset: 8, type: "int", size: 2 }
+      SpecialDefense: { offset: 10, type: "int", size: 2 }
+      move1: { offset: 12, type: "reference", size: 2, reference: "moves" }
+      move2: { offset: 14, type: "reference", size: 2, reference: "moves" }
+      move3: { offset: 16, type: "reference", size: 2, reference: "moves" }
+      move4: { offset: 18, type: "reference", size: 2, reference: "moves" }
+      unknownValue1-4Bytes: { offset: 20, type: "int", size: 4 }
+      modUnknown: { offset: 24, type: "reference", size: 1, reference: "stageModifiers" }
+      modStageAttack: { offset: 25, type: "reference", size: 1, reference: "stageModifiers" }
+      modStageDefense: { offset: 26, type: "reference", size: 1, reference: "stageModifiers" }
+      modStageSpeed: { offset: 27, type: "reference", size: 1, reference: "stageModifiers" }
+      modStageSpecialAttack: { offset: 28, type: "reference", size: 1, reference: "stageModifiers" }
+      modStageSpecialDefense: { offset: 29, type: "reference", size: 1, reference: "stageModifiers" }
+      modStageAccuracy: { offset: 30, type: "reference", size: 1, reference: "stageModifiers" }
+      modStageEvasion: { offset: 31, type: "reference", size: 1, reference: "stageModifiers" }
+      ability: { offset: 32, type: "reference", size: 1, reference: "abilities" }
+      type1: { offset: 33, type: "reference", size: 1, reference: "pokemonTypes" }
+      type2: { offset: 34, type: "reference", size: 1, reference: "pokemonTypes" }
+      unknownValue2: { offset: 35, type: "int", size: 1 }
+      move1pp: { offset: 36, type: "int", size: 1 }
+      move2pp: { offset: 37, type: "int", size: 1 }
+      move3pp: { offset: 38, type: "int", size: 1 }
+      move4pp: { offset: 39, type: "int", size: 1 }
+      battleStatHP: { offset: 40, type: "int", size: 2 }
+      unknownValue3: { offset: 42, type: "int", size: 2 }
+      battleStatMaxHP: { offset: 44, type: "int", size: 2 }
+      # itemHeld: ( offset: 46, type: "reference", size: 2, reference: "items" }
+
 
 properties:
   player:
-    # playerId: {type: "int", address: 0xD359, description: "The active player user Id, better tracking for if the game has loaded a new or saved game" }
+     # playerId: { type: "string", address: 0x020228CC, size: 2, reference: "defaultCharacterdescription: "The active player user Id, better tracking for if the game has loaded a new or saved game" }
     # name: { type: "string", address: 0xD157, size: 11 }
     teamCount: { type: "int", address: 0x20244E9 }
     team:
@@ -91,63 +125,15 @@ properties:
         - { type: "macro", address: 0x2024158, macro: "pokemonInParty" }
         - { type: "macro", address: 0x20241BC, macro: "pokemonInParty" }
         - { type: "macro", address: 0x2024220, macro: "pokemonInParty" }
-    yourPokemon:
-      species: { type: "reference", address: 0x2023BE4, size: 2, reference: "pokemon" }
-      modUnknown: { type: "reference", address: 0x2023BFC, size: 1, reference: "stageModifiers" }
-      modStageAttack: { type: "reference", address: 0x2023BFD, size: 1, reference: "stageModifiers" }
-      modStageDefense: { type: "reference", address: 0x2023BFE, size: 1, reference: "stageModifiers" }
-      modStageSpeed: { type: "reference", address: 0x2023BFF, size: 1, reference: "stageModifiers" }
-      modStageSpecialAttack: { type: "reference", address: 0x2023C00, size: 1, reference: "stageModifiers" }
-      modStageSpecialDefense: { type: "reference", address: 0x2023C01, size: 1, reference: "stageModifiers" }
-      modStageAccuracy: { type: "reference", address: 0x2023C02, size: 1, reference: "stageModifiers" }
-      modStageEvasion: { type: "reference", address: 0x2023C03, size: 1, reference: "stageModifiers" }
-      battleStatHP: { type: "int", address: 0x2023C0C, size: 2 }
-      battleStatMaxHP: { type: "int", address: 0x2023C10, size: 2 }
-      # battleStatAttack: { type: "int", address: 0xD024, size: 2, description: "The Player's active Pokemon's Attack stat as calculated in battle (badge boosts and stat modifications included" }
-      # battleStatDefense: { type: "int", address: 0xD026, size: 2, description: "The Player's active Pokemon's Defense stat as calculated in battle (badge boosts and stat modifications included" }
-      # battleStatSpeed: { type: "int", address: 0xD028, size: 2, description: "The Player's active Pokemon's Speed stat as calculated in battle (badge boosts and stat modifications included"}
-      # battleStatSpecial: { type: "int", address: 0xD02A, size: 2, description: "The Player's active Pokemon's Special stat as calculated in battle (badge boosts and stat modifications included" }
-      # # tempStatusConfusion: { type: "reference", address: 0xd061, size: 1, reference: "tempStatusConfused" }
-      # # tempStatusBadPoison: { type: "reference", address: 0xd063, size: 1, reference: "tempStatusBadPoison" }
-      # # move1: { type: "reference", address: 0xD01B, size: 1, reference: "moves" }
-      # # move2: { type: "reference", address: 0xD01C, size: 1, reference: "moves" }
-      # # move3: { type: "reference", address: 0xD01D, size: 1, reference: "moves" }
-      # # move4: { type: "reference", address: 0xD01E, size: 1, reference: "moves" }
-      move1pp: { type: "int", address: 0x2023C08, size: 1 }
-      move2pp: { type: "int", address: 0x2023C09, size: 1 }
-      move3pp: { type: "int", address: 0x2023C0A, size: 1 }
-      move4pp: { type: "int", address: 0x2023C0B, size: 1 }
-    enemyPokemon:
-      species: { type: "reference", address: 0x2023C3C, size: 2, reference: "pokemon" }
-      hp: { type: "int", address: 0x2023C64, size: 2 }
-      # statusCondition: { type: "reference", address: 0xCFE8, size: 1, reference: "statusConditions" }
-      # type1: { type: "reference", address: 0xCFE9, size: 1, reference: "pokemonTypes" }
-      # type2: { type: "reference", address: 0xCFEA, size: 1, reference: "pokemonTypes" }
-      level: { type: "int", address: 0x2023C66, size: 1 }
-      maxHp: { type: "int", address: 0x2023C68, size: 2 }
-      attack: { type: "int", address: 0x2023C3E, size: 2 }
-      defense: { type: "int", address: 0x2023C40, size: 2 }
-      speed: { type: "int", address: 0x2023C42, size: 2 }
-      specialAttack: { type: "int", address: 0x2023C44, size: 2 }
-      specialDefense: { type: "int", address: 0x2023C46, size: 2 }
-      modUnknown: { type: "reference", address: 0x2023C54, size: 1, reference: "stageModifiers" }
-      modStageAttack: { type: "reference", address: 0x2023C55, size: 1, reference: "stageModifiers" }
-      modStageDefense: { type: "reference", address: 0x2023C56, size: 1, reference: "stageModifiers" }
-      modStageSpeed: { type: "reference", address: 0x2023C57, size: 1, reference: "stageModifiers" }
-      modStageSpecialAttack: { type: "reference", address: 0x2023C58, size: 1, reference: "stageModifiers" }
-      modStageSpecialDefense: { type: "reference", address: 0x2023C59, size: 1, reference: "stageModifiers" }
-      modStageAccuracy: { type: "reference", address: 0x2023C5A, size: 1, reference: "stageModifiers" }
-      modStageEvasion: { type: "reference", address: 0x2023C5B, size: 1, reference: "stageModifiers" }
-      # move1: { type: "reference", address: 0x20240FC, size: 1, reference: "moves" }
-      # move2: { type: "reference", address: 0x20240FD, size: 1, reference: "moves" }
-      # move3: { type: "reference", address: 0x20240FE, size: 1, reference: "moves" }
-      # move4: { type: "reference", address: 0x20240FF, size: 1, reference: "moves" }
-      move1pp: { type: "int", address: 0x2023C60, size: 1 }
-      move2pp: { type: "int", address: 0x2023C61, size: 1 }
-      move3pp: { type: "int", address: 0x2023C62, size: 1 }
-      move4pp: { type: "int", address: 0x2023C63, size: 1 }
-    # turnInfo:
-    #   battleWeather: { type: "int", address: 0x20243cc, size: 1 } #Unknown values currently
+    yourPokemon: { type: "macro", address: 0x2023BE4, macro: "battleStructure" }
+    yourSecondPokemon: { type: "macro", address: 0x2023C94, macro: "battleStructure" }
+    enemyPokemon: { type: "macro", address: 0x2023C3C, macro: "battleStructure" }
+    enemySecondPokemon: { type: "macro", address: 0x2023CEC, macro: "battleStructure" }
+
+
+  turnInfo:
+       battleWeather: { type: "reference", address: 0x2023F1C, reference: "battleWeather" } 
+       battleWeatherTurnCounter: { type: "int", address: 0x02023F48 }
     #   battleOutcome: { type: "int", address: 0x202433a, size: 1 } #Unknown values currently
 
 glossary:
@@ -168,6 +154,112 @@ glossary:
     0x0D: 6
     0x0E: null
     0x14: null
+  pokemonTypes:
+    0x00:	Normal
+    0x01:	Fighting
+    0x02:	Flying
+    0x03:	Poison
+    0x04:	Ground
+    0x05:	Rock
+    0x06:	Bug
+    0x07:	Ghost
+    0x08:	Steel
+    0x09:	Mystery
+    0x0A:	Fire
+    0x0B:	Water
+    0x0C:	Grass
+    0x0D:	Electric
+    0x0E:	Psychic
+    0x0F:	Ice
+    0x10:	Dragon
+    0x11:	Dark
+  battleWeather:
+    0: "NONE"
+    1: "RAIN"
+    8: "SANDSTORM"
+    32: "SUNNY"
+    128: "HAIL"
+  abilities: 
+    0: "NONE"
+    1: "STENCH"
+    2: "DRIZZLE"
+    3: "SPEED BOOST"
+    4: "BATTLE ARMOR"
+    5: "STURDY"
+    6: "DAMP"
+    7: "LIMBER"
+    8: "SAND VEIL"
+    9: "STATIC"
+    10: "VOLT ABSORB"
+    11: "WATER ABSORB"
+    12: "OBLIVIOUS"
+    13: "CLOULD NINE"
+    14: "COMPOUND EYES"
+    15: "INSOMNIA"
+    16: "COLOR CHANGE"
+    17: "IMMUNITY"
+    18: "FLASH FIRE"
+    19: "SHIELD DUST"
+    20: "OWN TEMPO"
+    21: "SUCTION CUPS"
+    22: "INTIMIDATE"
+    23: "SHADOW TAG"
+    24: "ROUGH SKIN"
+    25: "WONDER GUARD"
+    26: "LEVITATE"
+    27: "EFFECT SPORE"
+    28: "SYNCHRONIZE"
+    29: "CLEAR BODY"
+    30: "NATURAL CARE"
+    31: "LIGHTNING ROD"
+    32: "SERENE GRACE"
+    33: "SWIFT SWIM"
+    34: "CHLOROPHYLL"
+    35: "ILLUMINATE"
+    36: "TRACE"
+    37: "HUGE POWER"
+    38: "POISON POINT"
+    39: "INNER FOCUS"
+    40: "MAGMA ARMOR"
+    41: "WATER VEIL"
+    42: "MAGNET PULL"
+    43: "SOUNDPROOF"
+    44: "RAIN DASH"
+    45: "SAND STREAM"
+    46: "PRESSURE"
+    47: "THICK FAT"
+    48: "EARLY BIRD"
+    49: "FLAME BODY"
+    50: "RUN AWAY"
+    51: "KEEN EYE"
+    52: "HYPER CUTTER"
+    53: "PICKUP"
+    54: "TRUANT"
+    55: "HUSTLE"
+    56: "CUTE CHARM"
+    57: "PLUS"
+    58: "MINUS"
+    59: "FORECAST"
+    60: "STICKY HOLD"
+    61: "SHED SKIN"
+    62: "GUTS"
+    63: "MARVEL SCALE"
+    64: "LIQUID OOZE"
+    65: "OVERGROW"
+    66: "BLAZE"
+    67: "TORRENT"
+    68: "SWARM"
+    69: "ROCK HEAD"
+    70: "DROUGHT"
+    71: "ARENA TRAP"
+    72: "VITAL SPIRIT"
+    73: "WHITE SMOKE"
+    74: "PURE POWER"
+    75: "SHELL ARMOR"
+    76: "CACOPHONY"
+    77: "AIR LOCK"
+   
+    
   moves:
     0: null
     1: "POUND"
