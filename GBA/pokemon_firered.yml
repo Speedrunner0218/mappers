@@ -364,6 +364,7 @@ glossary:
     0:   null
     1:   "Rain"
     8:   "Sandstorm"
+    24: "Sandstorm"
     32:  "Sunny"
     128: "Hail"
   battleDialogue: #Scott's Thoughts only
