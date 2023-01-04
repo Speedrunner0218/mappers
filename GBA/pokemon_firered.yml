@@ -216,6 +216,9 @@ properties:
       battleDialogue: { type: "int", address: 0x2023D44 } #Scott's Thoughts only
   events:
     trashCanPuzzle: { type: "bit", position: 4, preprocessor: "dma_967d10cc(0x03005008, 3884)" } #This flag is checked when the player enters the gym. Changing this flag while being inside the gym only takes effect when leaving and entering the gym again.
+  vsSeeker:
+    stepsUntilUse: { type: "uint", preprocessor: "dma_967d10cc(0x03005008, 1592)" }
+    stepsUntilCharged: { type: "uint", preprocessor: "dma_967d10cc(0x03005008, 1593)" }
   gameTime:
     hours:   { type: "int", preprocessor: "dma_967d10cc(0x0300500C, 14)" }
     minutes: { type: "int", preprocessor: "dma_967d10cc(0x0300500C, 16)" }
