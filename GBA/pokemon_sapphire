@@ -1,0 +1,2565 @@
+meta:
+  schemaVersion: 1
+  id: 005fdd01-8921-468c-aca3-d4fa864d5911
+  gameName: "Pokemon Ruby & Sapphire"
+  gamePlatform: "GBA"
+
+macros:
+  pokemonMacro:
+    species:       { offset: 0, type: "int", size: 2, reference: "pokemonSpecies" }
+    pokedexNumber: { offset: 0, type: "int", size: 2, reference: "pokemonPokedexNumbers" }
+  pokemonMacroEncrypted:
+    species:       { offset: 0, preprocessor: "data_block_a245dcac(0, 0)", type: "int", size: 2, reference: "pokemonSpecies" }
+    pokedexNumber: { offset: 0, preprocessor: "data_block_a245dcac(0, 0)", type: "int", size: 2, reference: "pokemonPokedexNumbers" }
+  pokemonMacro:
+    species:       { offset: 0, type: "int", size: 2, reference: "pokemonSpecies" }
+    pokedexNumber: { offset: 0, type: "int", size: 2, reference: "pokemonPokedexNumbers" }
+  pokemonMacroEncrypted:
+    species:       { offset: 0, preprocessor: "data_block_a245dcac(0, 0)", type: "int", size: 2, reference: "pokemonSpecies" }
+    pokedexNumber: { offset: 0, preprocessor: "data_block_a245dcac(0, 0)", type: "int", size: 2, reference: "pokemonPokedexNumbers" }
+  pokemonInParty:
+    #MAIN DATA
+    personalityValue: { offset: 0, type: "uint", size: 4 }
+    nature:     { offset: 0, type: "uint", size: 4, postprocessor: "x % 25", reference: "natures" }
+    otID:       { offset: 4, type: "uint", size: 4 }
+    nickname:   { offset: 8, type: "string", size: 10}
+    language:   { offset: 18, type: "int", reference: "language" }
+    isBadEgg:   { offset: 19, type: "bit", position: 0 }
+    hasSpecies: { offset: 19, type: "bit", position: 1 }
+    useEggName: { offset: 19, type: "bit", position: 2 }
+    otName:     { offset: 20, type: "string", size: 7 }
+    markingCircle:   { offset: 27, type: "bit", position: 0 }
+    markingSquare:   { offset: 27, type: "bit", position: 1 }
+    markingTriangle: { offset: 27, type: "bit", position: 2 }
+    markingHeart:    { offset: 27, type: "bit", position: 3 }
+    checksum:   { offset: 28, type: "int", size: 2, description: "Used to valid the decrypted data block" }
+    
+    #ENCRYPTED DATA (48 bytes, 4 blocks of 12)
+    #BLOCK1-GROWTH
+    _: { offset: 0, type: "macro", macro: "pokemonMacroEncrypted" }
+    speciesArray: { offset: 0, preprocessor: "data_block_a245dcac(0, 0)", type: "int", size: 2, reference: "pokemon" }
+    itemHeld:   { offset: 0, preprocessor: "data_block_a245dcac(0, 2)", type: "int", size: 2, reference: "items" }
+    expPoints:  { offset: 0, preprocessor: "data_block_a245dcac(0, 4)", type: "uint", size: 4 }
+    move1ppUp:  { offset: 0, preprocessor: "data_block_a245dcac(0, 8)", type: "int", postprocessor: "x & 3" }
+    move2ppUp:  { offset: 0, preprocessor: "data_block_a245dcac(0, 8)", type: "int", postprocessor: "(x & 12) >> 2" }
+    move3ppUp:  { offset: 0, preprocessor: "data_block_a245dcac(0, 8)", type: "int", postprocessor: "(x & 48) >> 4" }
+    move4ppUp:  { offset: 0, preprocessor: "data_block_a245dcac(0, 8)", type: "int", postprocessor: "(x & 192) >> 6" }
+    friendship: { offset: 0, preprocessor: "data_block_a245dcac(0, 9)", type: "int" }
+    # unknown:    { offset: 0, preprocessor: "data_block_a245dcac(0, 10)", type: "int" } #likely padding
+
+    # bitwise masking - pairs of 2 bytes
+    # 00000011 3   (no shift) formula: (x & 3)
+    # 00001100 12  (>>2)      formula: (x & 12) >> 2
+    # 00110000 48  (>>4)      formula: (x & 48) >> 4
+    # 11000000 192 (>>6)      formula: (x & 192) >> 6
+
+    # bisewise nybble masking
+    # 00001111 15 (>>0)  formula: (x & 15)
+    # 11110000 240 (>>4) formula: (x & 240) >> 4
+
+    #BLOCK2-Attacks
+    move1: { offset: 0, preprocessor: "data_block_a245dcac(1, 0)",  type: "int", size: 2, reference: "moves" }
+    move2: { offset: 0, preprocessor: "data_block_a245dcac(1, 2)",  type: "int", size: 2, reference: "moves" }
+    move3: { offset: 0, preprocessor: "data_block_a245dcac(1, 4)",  type: "int", size: 2, reference: "moves" }
+    move4: { offset: 0, preprocessor: "data_block_a245dcac(1, 6)",  type: "int", size: 2, reference: "moves" }
+    move1pp: { offset: 0, preprocessor: "data_block_a245dcac(1, 8)",  type: "int" }
+    move2pp: { offset: 0, preprocessor: "data_block_a245dcac(1, 9)",  type: "int" }
+    move3pp: { offset: 0, preprocessor: "data_block_a245dcac(1, 10)",  type: "int" }
+    move4pp: { offset: 0, preprocessor: "data_block_a245dcac(1, 11)",  type: "int" }
+
+    #BLOCK3-EVs & Condition
+    evHp:             { offset: 0, preprocessor: "data_block_a245dcac(2, 0)", type: "int" }
+    evAttack:         { offset: 0, preprocessor: "data_block_a245dcac(2, 1)", type: "int" }
+    evDefense:        { offset: 0, preprocessor: "data_block_a245dcac(2, 2)", type: "int" }
+    evSpeed:          { offset: 0, preprocessor: "data_block_a245dcac(2, 3)", type: "int" }
+    evSpecialAttack:  { offset: 0, preprocessor: "data_block_a245dcac(2, 4)", type: "int" }
+    evSpecialDefense: { offset: 0, preprocessor: "data_block_a245dcac(2, 5)", type: "int" }
+
+    #BLOCK4-MISC
+    # pokerusStatus:    { offset: 0, preprocessor: "data_block_a245dcac(3, 0)", type: "int" }
+    # metLocation:      { offset: 0, preprocessor: "data_block_a245dcac(3, 1)", type: "int" } #probably reference
+    # originsInfo:      { offset: 0, preprocessor: "data_block_a245dcac(3, 2)", type: "int", size: 2 } #probably reference
+    ivEggAbilityBlock:    { offset: 0, preprocessor: "data_block_a245dcac(3, 4)", type: "uint", size: 4}
+    ivHp:             { offset: 0, preprocessor: "data_block_a245dcac(3, 4)", type: "uint", size: 2, postprocessor: "x & 31"}
+    ivAttack:         { offset: 0, preprocessor: "data_block_a245dcac(3, 4)", type: "uint", size: 2, postprocessor: "(x & 992) >> 5"}
+    ivDefense:        { offset: 0, preprocessor: "data_block_a245dcac(3, 5)", type: "uint", size: 2, postprocessor: "(x & 124) >> 2"}
+    ivSpeed:          { offset: 0, preprocessor: "data_block_a245dcac(3, 5)", type: "uint", size: 2, postprocessor: "(x & 3968) >> 7"}
+    ivSpecialAttack:  { offset: 0, preprocessor: "data_block_a245dcac(3, 6)", type: "uint", size: 2, postprocessor: "(x & 496) >> 4"}
+    ivSpecialDefense: { offset: 0, preprocessor: "data_block_a245dcac(3, 6)", type: "uint", size: 2, postprocessor: "(x & 15872) >> 9"}
+    isEgg: { offset: 0, preprocessor: "data_block_a245dcac(3, 7)", type: "bit", position: 6 }
+    ability: { offset: 0, preprocessor: "data_block_a245dcac(3, 7)", type: "bit", position: 7 }
+    # robbinsObedience: { offset: 0, preprocessor: "data_block_a245dcac(3, 8)", type: "int", size: 4 }
+
+    # 0x20244EC
+    #   202450C-block1
+    #   2024518-block2
+    #   2024524-block3
+    #   2024530-block4
+
+    #MAIN DATA
+    level:   { offset: 84, type: "int" }
+    pokerus: { offset: 85, type: "int" }
+    hp:             { offset: 86, type: "int", size: 2 }
+    maxHp:          { offset: 88, type: "int", size: 2 }
+    attack:         { offset: 90, type: "int", size: 2 }
+    defense:        { offset: 92, type: "int", size: 2 }
+    speed:          { offset: 94, type: "int", size: 2 }
+    specialAttack:  { offset: 96, type: "int", size: 2 }
+    specialDefense: { offset: 98, type: "int", size: 2 }
+    statusCondition: { offset: 80, type: "int", reference: "statusConditions" }
+      
+  battleStructure: #there may be data in this structure before the species value
+    _: { offset: 0, type: "macro", macro: "pokemonMacro" }
+    speciesArray: { offset: 0, type: "int", size: 2, reference: "pokemon" }
+    ability:  { offset: 32, type: "int", reference: "abilities" }
+    heldItem: { offset: 46, type: "int", size: 2, reference: "items" }
+    move1: { offset: 12, type: "int", size: 2, reference: "moves" }
+    move2: { offset: 14, type: "int", size: 2, reference: "moves" }
+    move3: { offset: 16, type: "int", size: 2, reference: "moves" }
+    move4: { offset: 18, type: "int", size: 2, reference: "moves" }
+    move1pp: { offset: 36, type: "int" }
+    move2pp: { offset: 37, type: "int" }
+    move3pp: { offset: 38, type: "int" }
+    move4pp: { offset: 39, type: "int" }
+    maxHp:           { offset: 44, type: "int", size: 2 }
+    hp:              { offset: 40, type: "int", size: 2 }
+    attack:          { offset: 2, type: "int", size: 2 }
+    defense:         { offset: 4, type: "int", size: 2 }
+    speed:           { offset: 6, type: "int", size: 2 }
+    specialAttack:   { offset: 8, type: "int", size: 2 }
+    specialDefense:  { offset: 10, type: "int", size: 2 }
+    # unknownValue1-4Bytes: { offset: 20, type: "int", size: 4 }
+    modUnknown:             { offset: 24, type: "int", reference: "stageModifiers" } #probably critical hit mod
+    modStageAttack:         { offset: 25, type: "int", reference: "stageModifiers" }
+    modStageDefense:        { offset: 26, type: "int", reference: "stageModifiers" }
+    modStageSpeed:          { offset: 27, type: "int", reference: "stageModifiers" }
+    modStageSpecialAttack:  { offset: 28, type: "int", reference: "stageModifiers" }
+    modStageSpecialDefense: { offset: 29, type: "int", reference: "stageModifiers" }
+    modStageAccuracy: { offset: 30, type: "int", reference: "stageModifiers" }
+    modStageEvasion:  { offset: 31, type: "int", reference: "stageModifiers" }
+    focusEnergy:      { offset: 82, type: "bit", position: 4 }
+    type1:   { offset: 33, type: "int", reference: "pokemonTypes" }
+    type2:   { offset: 34, type: "int", reference: "pokemonTypes" }
+    # unknownValue2: { offset: 35, type: "int" }
+    # unknownValue3: { offset: 42, type: "int", size: 2 }
+
+properties:
+  player:
+    name: { type: "string", size: 8, address: 0x030045d4, characterMap: "defaultCharacterMap" }
+    #gender: ???
+    teamCount: { type: "int", address: 0x03004350, }
+    team:
+      - { type: "macro", address: 0x3004360, macro: "pokemonInParty" }
+      - { type: "macro", address: 0x30043C4, macro: "pokemonInParty" }
+      - { type: "macro", address: 0x3004428, macro: "pokemonInParty" }
+      - { type: "macro", address: 0x300448c, macro: "pokemonInParty" }
+      - { type: "macro", address: 0x30044f0, macro: "pokemonInParty" }
+      - { type: "macro", address: 0x3004554, macro: "pokemonInParty" }
+  battle:
+    trainer: 
+        #totalPokemon: ???
+        team: 
+            - { type: "macro", address: 0x30045c0, macro: "pokemonInParty" }
+            - { type: "macro", address: 0x3004624, macro: "pokemonInParty" }
+            - { type: "macro", address: 0x3004688, macro: "pokemonInParty" }
+            - { type: "macro", address: 0x30046ec, macro: "pokemonInParty" }
+            - { type: "macro", address: 0x3004750, macro: "pokemonInParty" }
+            - { type: "macro", address: 0x30047b4, macro: "pokemonInParty" }
+    yourPokemon:        { type: "macro", address: 0x2024A80, macro: "battleStructure" }
+    yourSecondPokemon:  { type: "macro", address: 0x2024B30, macro: "battleStructure" }
+    enemyPokemon:       { type: "macro", address: 0x2024AD8, macro: "battleStructure" }
+    enemySecondPokemon: { type: "macro", address: 0x2024B88, macro: "battleStructure" }
+    turnInfo:
+      battleWeather: { type: "int", address: 0x2024db8, reference: "battleWeather" }
+      battleWeatherTurnCounter: { type: "int", address: 0x2024DE4 }
+ 
+
+  
+
+  gameTime:
+    hours:   { type: "int", size: 2, address: 0x02024eb2 }
+    minutes: { type: "int", address: 0x02024eb4 }
+    seconds: { type: "int", address: 0x02024eb5 }
+    frames:  { type: "int", address: 0x02024eb6 }
+
+  
+
+glossary:
+  stageModifiers:
+    0x00: -6
+    0x01: -5
+    0x02: -4
+    0x03: -3
+    0x04: -2
+    0x05: -1
+    0x06: 0
+    0x07: 1
+    0x08: 2
+    0x09: 3
+    0x0A: 4
+    0x0B: 5
+    0x0C: 6
+    0x0D: 6
+    0x0E: null
+    0x0F: null
+    0x14: null
+  gender:
+    0x00: Male
+    0x01: Female
+  walkRunState:
+    0x00: null
+    0x21: Walk (Post event)
+    0x01: Walk
+    0x81: Run
+  bagPockets:
+    0x00: Items
+    0x01: Key Items
+    0x02: Pokeballs #incomplete (TMs)
+    0x03: TMs? #check
+    0x04: HMs? #check
+  pokemonTypes:
+    0x00: Normal
+    0x01: Fighting
+    0x02: Flying
+    0x03: Poison
+    0x04: Ground
+    0x05: Rock
+    0x06: Bug
+    0x07: Ghost
+    0x08: Steel
+    0x09: Mystery
+    0x0A: Fire
+    0x0B: Water
+    0x0C: Grass
+    0x0D: Electric
+    0x0E: Psychic
+    0x0F: Ice
+    0x10: Dragon
+    0x11: Dark
+  battleOutcome:
+    0x00: null #this will always be 0 when in battle; however, it is also set to 0 when you first load the ROM
+    0x01: "Won"
+    0x02: "Lost"
+    0x03: null #needs to be mapped
+    0x04: "Ran"
+  battleWeather:
+    0:   null
+    1:   "Rain"
+    8:   "Sandstorm"
+    32:  "Sunny"
+    128: "Hail"
+  battleDialogue: #Scott's Thoughts only
+    0x00: null
+    0x10: "Player Not In Control"
+    0x12: "Player Control"
+    0x14: "Selecting Move"
+    0x15: "Bag"
+    0x16: "Party Screen"
+  statusConditions:
+    0: null
+    1: Asleep
+    2: Asleep
+    3: Asleep
+    4: Asleep
+    5: Asleep
+    6: Asleep
+    7: Asleep
+    8: Poisoned
+    16: Burned
+    32: Frozen
+    64: Paralyzed
+    128: Badly Posioned
+  abilities: 
+    0: null
+    1: "STENCH"
+    2: "DRIZZLE"
+    3: "SPEED BOOST"
+    4: "BATTLE ARMOR"
+    5: "STURDY"
+    6: "DAMP"
+    7: "LIMBER"
+    8: "SAND VEIL"
+    9: "STATIC"
+    10: "VOLT ABSORB"
+    11: "WATER ABSORB"
+    12: "OBLIVIOUS"
+    13: "CLOULD NINE"
+    14: "COMPOUND EYES"
+    15: "INSOMNIA"
+    16: "COLOR CHANGE"
+    17: "IMMUNITY"
+    18: "FLASH FIRE"
+    19: "SHIELD DUST"
+    20: "OWN TEMPO"
+    21: "SUCTION CUPS"
+    22: "INTIMIDATE"
+    23: "SHADOW TAG"
+    24: "ROUGH SKIN"
+    25: "WONDER GUARD"
+    26: "LEVITATE"
+    27: "EFFECT SPORE"
+    28: "SYNCHRONIZE"
+    29: "CLEAR BODY"
+    30: "NATURAL CARE"
+    31: "LIGHTNING ROD"
+    32: "SERENE GRACE"
+    33: "SWIFT SWIM"
+    34: "CHLOROPHYLL"
+    35: "ILLUMINATE"
+    36: "TRACE"
+    37: "HUGE POWER"
+    38: "POISON POINT"
+    39: "INNER FOCUS"
+    40: "MAGMA ARMOR"
+    41: "WATER VEIL"
+    42: "MAGNET PULL"
+    43: "SOUNDPROOF"
+    44: "RAIN DASH"
+    45: "SAND STREAM"
+    46: "PRESSURE"
+    47: "THICK FAT"
+    48: "EARLY BIRD"
+    49: "FLAME BODY"
+    50: "RUN AWAY"
+    51: "KEEN EYE"
+    52: "HYPER CUTTER"
+    53: "PICKUP"
+    54: "TRUANT"
+    55: "HUSTLE"
+    56: "CUTE CHARM"
+    57: "PLUS"
+    58: "MINUS"
+    59: "FORECAST"
+    60: "STICKY HOLD"
+    61: "SHED SKIN"
+    62: "GUTS"
+    63: "MARVEL SCALE"
+    64: "LIQUID OOZE"
+    65: "OVERGROW"
+    66: "BLAZE"
+    67: "TORRENT"
+    68: "SWARM"
+    69: "ROCK HEAD"
+    70: "DROUGHT"
+    71: "ARENA TRAP"
+    72: "VITAL SPIRIT"
+    73: "WHITE SMOKE"
+    74: "PURE POWER"
+    75: "SHELL ARMOR"
+    76: "CACOPHONY"
+    77: "AIR LOCK"
+  natures:
+    0:	Hardy
+    1:	Lonely
+    2:	Brave
+    3:	Adamant
+    4:	Naughty
+    5:	Bold
+    6:	Docile
+    7:	Relaxed
+    8:	Impish
+    9:	Lax
+    10:	Timid
+    11:	Hasty
+    12:	Serious
+    13:	Jolly
+    14:	Naive
+    15:	Modest
+    16:	Mild
+    17:	Quiet
+    18:	Bashful
+    19:	Rash
+    20:	Calm
+    21:	Gentle
+    22:	Sassy
+    23:	Careful
+    24:	Quirky
+  moves:
+    0: null
+    1: "POUND"
+    2: "KARATE CHOP"
+    3: "DOUBLE SLAP"
+    4: "COMET PUNCH"
+    5: "MEGA PUNCH"
+    6: "PAY DAY"
+    7: "FIRE PUNCH"
+    8: "ICE PUNCH"
+    9: "THUNDER PUNCH"
+    10: "SCRATCH"
+    11: "VICE GRIP"
+    12: "GUILLOTINE"
+    13: "RAZOR WIND"
+    14: "SWORDS DANCE"
+    15: "CUT"
+    16: "GUST"
+    17: "WING ATTACK"
+    18: "WHIRLWIND"
+    19: "FLY"
+    20: "BIND"
+    21: "SLAM"
+    22: "VINE WHIP"
+    23: "STOMP"
+    24: "DOUBLE KICK"
+    25: "MEGA KICK"
+    26: "JUMP KICK"
+    27: "ROLLING KICK"
+    28: "SAND ATTACK"
+    29: "HEADBUTT"
+    30: "HORN ATTACK"
+    31: "FURY ATTACK"
+    32: "HORN DRILL"
+    33: "TACKLE"
+    34: "BODY SLAM"
+    35: "WRAP"
+    36: "TAKE DOWN"
+    37: "THRASH"
+    38: "DOUBLE EDGE"
+    39: "TAIL WHIP"
+    40: "POISON STING"
+    41: "TWINEEDLE"
+    42: "PIN MISSILE"
+    43: "LEER"
+    44: "BITE"
+    45: "GROWL"
+    46: "ROAR"
+    47: "SING"
+    48: "SUPERSONIC"
+    49: "SONIC BOOM"
+    50: "DISABLE"
+    51: "ACID"
+    52: "EMBER"
+    53: "FLAMETHROWER"
+    54: "MIST"
+    55: "WATER GUN"
+    56: "HYDRO PUMP"
+    57: "SURF"
+    58: "ICE BEAM"
+    59: "BLIZZARD"
+    60: "PSYBEAM"
+    61: "BUBBLE BEAM"
+    62: "AURORA BEAM"
+    63: "HYPER BEAM"
+    64: "PECK"
+    65: "DRILL PECK"
+    66: "SUBMISSION"
+    67: "LOW KICK"
+    68: "COUNTER"
+    69: "SEISMIC TOSS"
+    70: "STRENGTH"
+    71: "ABSORB"
+    72: "MEGA DRAIN"
+    73: "LEECH SEED"
+    74: "GROWTH"
+    75: "RAZOR LEAF"
+    76: "SOLAR BEAM"
+    77: "POISON POWDER"
+    78: "STUN SPORE"
+    79: "SLEEP POWDER"
+    80: "PETAL DANCE"
+    81: "STRING SHOT"
+    82: "DRAGON RAGE"
+    83: "FIRE SPIN"
+    84: "THUNDER SHOCK"
+    85: "THUNDERBOLT"
+    86: "THUNDER WAVE"
+    87: "THUNDER"
+    88: "ROCK THROW"
+    89: "EARTHQUAKE"
+    90: "FISSURE"
+    91: "DIG"
+    92: "TOXIC"
+    93: "CONFUSION"
+    94: "PSYCHIC"
+    95: "HYPNOSIS"
+    96: "MEDITATE"
+    97: "AGILITY"
+    98: "QUICK ATTACK"
+    99: "RAGE"
+    100: "TELEPORT"
+    101: "NIGHT SHADE"
+    102: "MIMIC"
+    103: "SCREECH"
+    104: "DOUBLE TEAM"
+    105: "RECOVER"
+    106: "HARDEN"
+    107: "MINIMIZE"
+    108: "SMOKESCREEN"
+    109: "CONFUSE RAY"
+    110: "WITHDRAW"
+    111: "DEFENSE CURL"
+    112: "BARRIER"
+    113: "LIGHT SCREEN"
+    114: "HAZE"
+    115: "REFLECT"
+    116: "FOCUS ENERGY"
+    117: "BIDE"
+    118: "METRONOME"
+    119: "MIRROR MOVE"
+    120: "SELF DESTRUCT"
+    121: "EGG BOMB"
+    122: "LICK"
+    123: "SMOG"
+    124: "SLUDGE"
+    125: "BONE CLUB"
+    126: "FIRE BLAST"
+    127: "WATERFALL"
+    128: "CLAMP"
+    129: "SWIFT"
+    130: "SKULL BASH"
+    131: "SPIKE CANNON"
+    132: "CONSTRICT"
+    133: "AMNESIA"
+    134: "KINESIS"
+    135: "SOFT BOILED"
+    136: "HI JUMP KICK"
+    137: "GLARE"
+    138: "DREAM EATER"
+    139: "POISON GAS"
+    140: "BARRAGE"
+    141: "LEECH LIFE"
+    142: "LOVELY KISS"
+    143: "SKY ATTACK"
+    144: "TRANSFORM"
+    145: "BUBBLE"
+    146: "DIZZY PUNCH"
+    147: "SPORE"
+    148: "FLASH"
+    149: "PSYWAVE"
+    150: "SPLASH"
+    151: "ACID ARMOR"
+    152: "CRABHAMMER"
+    153: "EXPLOSION"
+    154: "FURY SWIPES"
+    155: "BONEMERANG"
+    156: "REST"
+    157: "ROCK SLIDE"
+    158: "HYPER FANG"
+    159: "SHARPEN"
+    160: "CONVERSION"
+    161: "TRI ATTACK"
+    162: "SUPER FANG"
+    163: "SLASH"
+    164: "SUBSTITUTE"
+    165: "STRUGGLE"
+    166: "SKETCH"
+    167: "TRIPLE KICK"
+    168: "THIEF"
+    169: "SPIDER WEB"
+    170: "MIND READER"
+    171: "NIGHTMARE"
+    172: "FLAME WHEEL"
+    173: "SNORE"
+    174: "CURSE"
+    175: "FLAIL"
+    176: "CONVERSION 2"
+    177: "AEROBLAST"
+    178: "COTTON SPORE"
+    179: "REVERSAL"
+    180: "SPITE"
+    181: "POWDER SNOW"
+    182: "PROTECT"
+    183: "MACH PUNCH"
+    184: "SCARY FACE"
+    185: "FAINT ATTACK"
+    186: "SWEET KISS"
+    187: "BELLY DRUM"
+    188: "SLUDGE BOMB"
+    189: "MUD SLAP"
+    190: "OCTAZOOKA"
+    191: "SPIKES"
+    192: "ZAP CANNON"
+    193: "FORESIGHT"
+    194: "DESTINY BOND"
+    195: "PERISH SONG"
+    196: "ICY WIND"
+    197: "DETECT"
+    198: "BONE RUSH"
+    199: "LOCK ON"
+    200: "OUTRAGE"
+    201: "SANDSTORM"
+    202: "GIGA DRAIN"
+    203: "ENDURE"
+    204: "CHARM"
+    205: "ROLLOUT"
+    206: "FALSE SWIPE"
+    207: "SWAGGER"
+    208: "MILK DRINK"
+    209: "SPARK"
+    210: "FURY CUTTER"
+    211: "STEEL WING"
+    212: "MEAN LOOK"
+    213: "ATTRACT"
+    214: "SLEEP TALK"
+    215: "HEAL BELL"
+    216: "RETURN"
+    217: "PRESENT"
+    218: "FRUSTRATION" 
+    219: "SAFEGUARD" 
+    220: "PAIN SPLIT" 
+    221: "SACRED FIRE" 
+    222: "MAGNITUDE" 
+    223: "DYNAMIC PUNCH" 
+    224: "MEGAHORN" 
+    225: "DRAGON BREATH" 
+    226: "BATON PASS" 
+    227: "ENCORE" 
+    228: "PURSUIT" 
+    229: "RAPID SPIN" 
+    230: "SWEET SCENT" 
+    231: "IRON TAIL" 
+    232: "METAL CLAW" 
+    233: "VITAL THROW" 
+    234: "MORNING SUN"
+    235: "SYNTHESIS" 
+    236: "MOONLIGHT" 
+    237: "HIDDEN POWER" 
+    238: "CROSS CHOP" 
+    239: "TWISTER" 
+    240: "RAIN DANCE" 
+    241: "SUNNY DAY" 
+    242: "CRUNCH" 
+    243: "MIRROR COAT" 
+    244: "PSYCH UP" 
+    245: "EXTREME SPEED" 
+    246: "ANCIENT POWER" 
+    247: "SHADOW BALL" 
+    248: "FUTURE SIGHT" 
+    249: "ROCK SMASH" 
+    250: "WHIRLPOOL" 
+    251: "BEAT UP" 
+    252: "FAKE OUT" 
+    253: "UPROAR" 
+    254: "STOCKPILE" 
+    255: "SPIT UP" 
+    256: "SWALLOW" 
+    257: "HEAT WAVE" 
+    258: "HAIL" 
+    259: "TORMENT" 
+    260: "FLATTER" 
+    261: "WILL O WISP" 
+    262: "MEMENTO" 
+    263: "FACADE" 
+    264: "FOCUS PUNCH" 
+    265: "SMELLING SALT"
+    266: "FOLLOW ME" 
+    267: "NATURE POWER" 
+    268: "CHARGE" 
+    269: "TAUNT" 
+    270: "HELPING HAND" 
+    271: "TRICK" 
+    272: "ROLE PLAY" 
+    273: "WISH" 
+    274: "ASSIST" 
+    275: "INGRAIN" 
+    276: "SUPERPOWER" 
+    277: "MAGIC COAT" 
+    278: "RECYCLE" 
+    279: "REVENGE" 
+    280: "BRICK BREAK"
+    281: "YAWN" 
+    282: "KNOCK OFF" 
+    283: "ENDEAVOR" 
+    284: "ERUPTION" 
+    285: "SKILL SWAP" 
+    286: "IMPRISON" 
+    287: "REFRESH" 
+    288: "GRUDGE"
+    289: "SNATCH" 
+    290: "SECRET POWER" 
+    291: "DIVE" 
+    292: "ARM THRUST" 
+    293: "CAMOUFLAGE" 
+    294: "TAIL GLOW" 
+    295: "LUSTER PURGE" 
+    296: "MIST BALL" 
+    297: "FEATHER DANCE" 
+    298: "TEETER DANCE" 
+    299: "BLAZE KICK" 
+    300: "MUD SPORT" 
+    301: "ICE BALL" 
+    302: "NEEDLE ARM" 
+    303: "SLACK OFF" 
+    304: "HYPER VOICE" 
+    305: "POISON FANG"
+    306: "CRUSH CLAW" 
+    307: "BLAST BURN" 
+    308: "HYDRO CANNON" 
+    309: "METEOR MASH" 
+    310: "ASTONISH" 
+    311: "WEATHER BALL" 
+    312: "AROMATHERAPY" 
+    313: "FAKE TEARS" 
+    314: "AIR CUTTER" 
+    315: "OVERHEAT"
+    316: "ODOR SLEUTH"
+    317: "ROCK TOMB"
+    318: "SILVER WIND"
+    319: "METAL SOUND"
+    320: "GRASS WHISTLE"
+    321: "TICKLE"
+    322: "COSMIC POWER"
+    323: "WATER SPOUT"
+    324: "SIGNAL BEAM"
+    325: "SHADOW PUNCH"
+    326: "EXTRASENSORY"
+    327: "SKY UPPERCUT"
+    328: "SAND TOMB"
+    329: "SHEER COLD"
+    330: "MUDDY WATER"
+    331: "BULLET SEED"
+    332: "AERIAL ACE"
+    333: "ICICLE SPEAR"
+    334: "IRON DEFENSE"
+    335: "BLOCK"
+    336: "HOWL"
+    337: "DRAGON CLAW"
+    338: "FRENZY PLANT"
+    339: "BULK UP"
+    340: "BOUNCE"
+    341: "MUD SHOT"
+    342: "POISON TAIL"
+    343: "COVET"
+    344: "VOLT TACKLE"
+    345: "MAGICAL LEAF"
+    346: "WATER SPORT"
+    347: "CALM MIND"
+    348: "LEAF BLADE" 
+    349: "DRAGON DANCE"
+    350: "ROCK BLAST"
+    351: "SHOCK WAVE"
+    352: "WATER PULSE"
+    353: "DOOM DESIRE"
+    354: "PSYCHO BOOST"
+  items:
+    1: "MASTER BALL"
+    2: "ULTRA BALL"
+    3: "GREAT BALL"
+    4: "POKE BALL"
+    5: "SAFARI BALL"
+    6: "NET BALL"
+    7: "DIVE BALL"
+    8: "NEST BALL"
+    9: "REPEAT BALL"
+    10: "TIMER BALL"
+    11: "LUXURY BALL"
+    12: "PREMIER BALL"
+    13: "POTION"
+    14: "ANTIDOTE"
+    15: "BURN HEAL"
+    16: "ICE HEAL"
+    17: "AWAKENING"
+    18: "PARALYZE HEAL"
+    19: "FULL RESTORE"
+    20: "MAX POTION"
+    21: "HYPER POTION"
+    22: "SUPER POTION"
+    23: "FULL HEAL"
+    24: "REVIVE"
+    25: "MAX REVIVE"
+    26: "FRESH WATER"
+    27: "SODA POP"
+    28: "LEMONADE"
+    29: "MOOMOO MILK"
+    30: "ENERGY POWDER"
+    31: "ENERGY ROOT"
+    32: "HEAL POWDER"
+    33: "REVIVAL HERB"
+    34: "ETHER"
+    35: "MAX ETHER"
+    36: "ELIXIR"
+    37: "MAX ELIXIR"
+    38: "LAVA COOKIE"
+    39: "BLUE FLUTE"
+    40: "YELLOW FLUTE"
+    41: "RED FLUTE"
+    42: "BLACK FLUTE"
+    43: "WHITE FLUTE"
+    44: "BERRY JUICE"
+    45: "SACRED ASH"
+    46: "SHOAL SALT"
+    47: "SHOAL SHELL"
+    48: "RED SHARD"
+    49: "BLUE SHARD"
+    50: "YELLOW SHARD"
+    51: "GREEN SHARD"
+    52: "034"
+    53: "035"
+    54: "036"
+    55: "037"
+    56: "038"
+    57: "039"
+    58: "03A"
+    59: "03B"
+    60: "03C"
+    61: "03D"
+    62: "03E"
+    63: "HP UP"
+    64: "PROTEIN"
+    65: "IRON"
+    66: "CARBOS"
+    67: "CALCIUM"
+    68: "RARE CANDY"
+    69: "PP UP"
+    70: "ZINC"
+    71: "PP MAX"
+    72: "048"
+    73: "GUARD SPEC"
+    74: "DIRE HIT"
+    75: "X ATTACK"
+    76: "X DEFEND"
+    77: "X SPEED"
+    78: "X ACCURACY"
+    79: "X SPECIAL"
+    80: "POKE DOLL"
+    81: "FLUFFY TAIL"
+    82: "052"
+    83: "SUPER REPEL"
+    84: "MAX REPEL"
+    85: "ESCAPE ROPE"
+    86: "REPEL"
+    87: "057"
+    88: "058"
+    89: "059"
+    90: "05A"
+    91: "05B"
+    92: "05C"
+    93: "SUN STONE"
+    94: "MOON STONE"
+    95: "FIRE STONE"
+    96: "THUNDER STONE"
+    97: "WATER STONE"
+    98: "LEAF STONE"
+    99: "063"
+    100: "064"
+    101: "065"
+    102: "066"
+    103: "TINY MUSHROOM"
+    104: "BIG MUSHROOM"
+    105: "069"
+    106: "PEARL"
+    107: "BIG PEARL"
+    108: "STARDUST"
+    109: "STAR PIECE"
+    110: "NUGGET"
+    111: "HEART SCALE"
+    112: "070"
+    113: "071"
+    114: "072"
+    115: "073"
+    116: "074"
+    117: "075"
+    118: "076"
+    119: "077"
+    120: "078"
+    121: "ORANGE MAIL"
+    122: "HARBOR MAIL"
+    123: "GLITTER MAIL"
+    124: "MECH MAIL"
+    125: "WOOD MAIL"
+    126: "WAVE MAIL"
+    127: "BEAD MAIL"
+    128: "SHADOW MAIL"
+    129: "TROPIC MAIL"
+    130: "DREAM MAIL"
+    131: "FAB MAIL"
+    132: "RETRO MAIL"
+    133: "CHERI BERRY"
+    134: "CHESTO BERRY"
+    135: "PECHA BERRY"
+    136: "RAWST BERRY"
+    137: "ASPEAR BERRY"
+    138: "LEPPA BERRY"
+    139: "ORAN BERRY"
+    140: "PERSIM BERRY"
+    141: "LUM BERRY"
+    142: "SITRUS BERRY"
+    143: "FIGY BERRY"
+    144: "WIKI BERRY"
+    145: "MAGO BERRY"
+    146: "AGUAV BERRY"
+    147: "IAPAPA BERRY"
+    148: "RAZZ BERRY"
+    149: "BLUK BERRY"
+    150: "NANAB BERRY"
+    151: "WEPEAR BERRY"
+    152: "PINAP BERRY"
+    153: "POMEG BERRY"
+    154: "KELPSY BERRY"
+    155: "QUALOT BERRY"
+    156: "HONDEW BERRY"
+    157: "GREPA BERRY"
+    158: "TAMATO BERRY"
+    159: "CORNN BERRY"
+    160: "MAGOST BERRY"
+    161: "RABUTA BERRY"
+    162: "NOMEL BERRY"
+    163: "SPELON BERRY"
+    164: "PAMTRE BERRY"
+    165: "WATMEL BERRY"
+    166: "DURIN BERRY"
+    167: "BELUE BERRY"
+    168: "LIECHI BERRY"
+    169: "GANLON BERRY"
+    170: "SALAC BERRY"
+    171: "PETAYA BERRY"
+    172: "APICOT BERRY"
+    173: "LANSAT BERRY"
+    174: "STARF BERRY"
+    175: "ENIGMA BERRY"
+    176: "UNUSED BERRY 1"
+    177: "UNUSED BERRY 2"
+    178: "UNUSED BERRY 3"
+    179: "BRIGHT POWDER"
+    180: "WHITE HERB"
+    181: "MACHO BRACE"
+    182: "EXP SHARE"
+    183: "QUICK CLAW"
+    184: "SOOTHE BELL"
+    185: "MENTAL HERB"
+    186: "CHOICE BAND"
+    187: "KINGS ROCK"
+    188: "SILVER POWDER"
+    189: "AMULET COIN"
+    190: "CLEANSE TAG"
+    191: "SOUL DEW"
+    192: "DEEP SEA TOOTH"
+    193: "DEEP SEA SCALE"
+    194: "SMOKE BALL"
+    195: "EVERSTONE"
+    196: "FOCUS BAND"
+    197: "LUCKY EGG"
+    198: "SCOPE LENS"
+    199: "METAL COAT"
+    200: "LEFTOVERS"
+    201: "DRAGON SCALE"
+    202: "LIGHT BALL"
+    203: "SOFT SAND"
+    204: "HARD STONE"
+    205: "MIRACLE SEED"
+    206: "BLACK GLASSES"
+    207: "BLACK BELT"
+    208: "MAGNET"
+    209: "MYSTIC WATER"
+    210: "SHARP BEAK"
+    211: "POISON BARB"
+    212: "NEVER MELT ICE"
+    213: "SPELL TAG"
+    214: "TWISTED SPOON"
+    215: "CHARCOAL"
+    216: "DRAGON FANG"
+    217: "SILK SCARF"
+    218: "UP GRADE"
+    219: "SHELL BELL"
+    220: "SEA INCENSE"
+    221: "LAX INCENSE"
+    222: "LUCKY PUNCH"
+    223: "METAL POWDER"
+    224: "THICK CLUB"
+    225: "STICK"
+    226: "0E2"
+    227: "0E3"
+    228: "0E4"
+    229: "0E5"
+    230: "0E6"
+    231: "0E7"
+    232: "0E8"
+    233: "0E9"
+    234: "0EA"
+    235: "0EB"
+    236: "0EC"
+    237: "0ED"
+    238: "0EE"
+    239: "0EF"
+    240: "0F0"
+    241: "0F1"
+    242: "0F2"
+    243: "0F3"
+    244: "0F4"
+    245: "0F5"
+    246: "0F6"
+    247: "0F7"
+    248: "0F8"
+    249: "0F9"
+    250: "0FA"
+    251: "0FB"
+    252: "0FC"
+    253: "0FD"
+    254: "RED SCARF"
+    255: "BLUE SCARF"
+    256: "PINK SCARF"
+    257: "GREEN SCARF"
+    258: "YELLOW SCARF"
+    259: "MACH BIKE"
+    260: "COIN CASE"
+    261: "ITEMFINDER"
+    262: "OLD ROD"
+    263: "GOOD ROD"
+    264: "SUPER ROD"
+    265: "SS TICKET"
+    266: "CONTEST PASS"
+    267: "10B"
+    268: "WAILMER PAIL"
+    269: "DEVON GOODS"
+    270: "SOOT SACK"
+    271: "BASEMENT KEY"
+    272: "ACRO BIKE"
+    273: "POKEBLOCK CASE"
+    274: "LETTER"
+    275: "EON TICKET"
+    276: "RED ORB"
+    277: "BLUE ORB"
+    278: "SCANNER"
+    279: "GO GOGGLES"
+    280: "METEORITE"
+    281: "ROOM 1 KEY"
+    282: "ROOM 2 KEY"
+    283: "ROOM 4 KEY"
+    284: "ROOM 6 KEY"
+    285: "STORAGE KEY"
+    286: "ROOT FOSSIL"
+    287: "CLAW FOSSIL"
+    288: "DEVON SCOPE"
+    289: "TM01"
+    290: "TM02"
+    291: "TM03"
+    292: "TM04"
+    293: "TM05"
+    294: "TM06"
+    295: "TM07"
+    296: "TM08"
+    297: "TM09"
+    298: "TM10"
+    299: "TM11"
+    300: "TM12"
+    301: "TM13"
+    302: "TM14"
+    303: "TM15"
+    304: "TM16"
+    305: "TM17"
+    306: "TM18"
+    307: "TM19"
+    308: "TM20"
+    309: "TM21"
+    310: "TM22"
+    311: "TM23"
+    312: "TM24"
+    313: "TM25"
+    314: "TM26"
+    315: "TM27"
+    316: "TM28"
+    317: "TM29"
+    318: "TM30"
+    319: "TM31"
+    320: "TM32"
+    321: "TM33"
+    322: "TM34"
+    323: "TM35"
+    324: "TM36"
+    325: "TM37"
+    326: "TM38"
+    327: "TM39"
+    328: "TM40"
+    329: "TM41"
+    330: "TM42"
+    331: "TM43"
+    332: "TM44"
+    333: "TM45"
+    334: "TM46"
+    335: "TM47"
+    336: "TM48"
+    337: "TM49"
+    338: "TM50"
+    339: "HM01"
+    340: "HM02"
+    341: "HM03"
+    342: "HM04"
+    343: "HM05"
+    344: "HM06"
+    345: "HM07"
+    346: "HM08"
+    347: "15B"
+    348: "15C"
+    349: "OAKS PARCEL"
+    350: "POKE FLUTE"
+    351: "SECRET KEY"
+    352: "BIKE VOUCHER"
+    353: "GOLD TEETH"
+    354: "OLD AMBER"
+    355: "CARD KEY"
+    356: "LIFT KEY"
+    357: "HELIX FOSSIL"
+    358: "DOME FOSSIL"
+    359: "SILPH SCOPE"
+    360: "BICYCLE"
+    361: "TOWN MAP"
+    362: "VS SEEKER"
+    363: "FAME CHECKER"
+    364: "TM CASE"
+    365: "BERRY POUCH"
+    366: "TEACHY TV"
+    367: "TRI PASS"
+    368: "RAINBOW PASS"
+    369: "TEA"
+    370: "MYSTIC TICKET"
+    371: "AURORA TICKET"
+    372: "POWDER JAR"
+    373: "RUBY"
+    374: "SAPPHIRE"
+    375: "MAGMA EMBLEM"
+    376: "OLD SEA MAP"
+    # : "TM01 FOCUS PUNCH ITEM TM01
+    # : "TM02 DRAGON CLAW ITEM TM02
+    # : "TM03 WATER PULSE ITEM TM03
+    # : "TM04 CALM MIND ITEM TM04
+    # : "TM05 ROAR ITEM TM05
+    # : "TM06 TOXIC ITEM TM06
+    # : "TM07 HAIL ITEM TM07
+    # : "TM08 BULK UP ITEM TM08
+    # : "TM09 BULLET SEED ITEM TM09
+    # : "TM10 HIDDEN POWER ITEM TM10
+    # : "TM11 SUNNY DAY ITEM TM11
+    # : "TM12 TAUNT ITEM TM12
+    # : "TM13 ICE BEAM ITEM TM13
+    # : "TM14 BLIZZARD ITEM TM14
+    # : "TM15 HYPER BEAM ITEM TM15
+    # : "TM16 LIGHT SCREEN ITEM TM16
+    # : "TM17 PROTECT ITEM TM17
+    # : "TM18 RAIN DANCE ITEM TM18
+    # : "TM19 GIGA DRAIN ITEM TM19
+    # : "TM20 SAFEGUARD ITEM TM20
+    # : "TM21 FRUSTRATION ITEM TM21
+    # : "TM22 SOLAR BEAM ITEM TM22
+    # : "TM23 IRON TAIL ITEM TM23
+    # : "TM24 THUNDERBOLT ITEM TM24
+    # : "TM25 THUNDER ITEM TM25
+    # : "TM26 EARTHQUAKE ITEM TM26
+    # : "TM27 RETURN ITEM TM27
+    # : "TM28 DIG ITEM TM28
+    # : "TM29 PSYCHIC ITEM TM29
+    # : "TM30 SHADOW BALL ITEM TM30
+    # : "TM31 BRICK BREAK ITEM TM31
+    # : "TM32 DOUBLE TEAM ITEM TM32
+    # : "TM33 REFLECT ITEM TM33
+    # : "TM34 SHOCK WAVE ITEM TM34
+    # : "TM35 FLAMETHROWER ITEM TM35
+    # : "TM36 SLUDGE BOMB ITEM TM36
+    # : "TM37 SANDSTORM ITEM TM37
+    # : "TM38 FIRE BLAST ITEM TM38
+    # : "TM39 ROCK TOMB ITEM TM39
+    # : "TM40 AERIAL ACE ITEM TM40
+    # : "TM41 TORMENT ITEM TM41
+    # : "TM42 FACADE ITEM TM42
+    # : "TM43 SECRET POWER ITEM TM43
+    # : "TM44 REST ITEM TM44
+    # : "TM45 ATTRACT ITEM TM45
+    # : "TM46 THIEF ITEM TM46
+    # : "TM47 STEEL WING ITEM TM47
+    # : "TM48 SKILL SWAP ITEM TM48
+    # : "TM49 SNATCH ITEM TM49
+    # : "TM50 OVERHEAT ITEM TM50
+    # : "HM01 CUT ITEM HM01
+    # : "HM02 FLY ITEM HM02
+    # : "HM03 SURF ITEM HM03
+    # : "HM04 STRENGTH ITEM HM04
+    # : "HM05 FLASH ITEM HM05
+    # : "HM06 ROCK SMASH ITEM HM06
+    # : "HM07 WATERFALL ITEM HM07
+    # : "HM08 DIVE ITEM HM08
+  defaultCharacterMap:
+    0x00: " "
+    0x01: "À"
+    0x02: "Á"
+    0x03: "Â"
+    0x04: "ç"
+    0x05: "È"
+    0x06: "É"
+    0x07: "Ê"
+    0x08: "Ë"
+    0x09: "Ì"
+    0x0A: null
+    0x0B: "Î"
+    0x0C: "Ï"
+    0x0D: "Ò"
+    0x0E: "Ó"
+    0x0F: "Ô"
+    0x10: "Œ"
+    0x11: "Ù"
+    0x12: "Ú"
+    0x13: "Û"
+    0x14: "Ñ"
+    0x15: "ß"
+    0x16: "à"
+    0x17: "á"
+    0x18: null
+    0x19: "ç"
+    0x1A: "è"
+    0x1B: "é"
+    0x1C: "ê"
+    0x1D: "ë"
+    0x1E: "ì"
+    0x1F: null
+    0x20: "î"
+    0x21: "ï"
+    0x22: "ò"
+    0x23: "ó"
+    0x24: "ô"
+    0x25: "œ"
+    0x26: "ù"
+    0x27: "ú"
+    0x28: "û"
+    0x29: "ñ"
+    0x2A: "ͦ"
+    0x2B: "ͣ"
+    0x2C: "ͤ ͬ"
+    0x2D: "&"
+    0x2E: "+"
+    0x2F: null
+    0x30: null
+    0x31: null
+    0x32: null
+    0x33: null
+    0x34: "Lv"
+    0x35: "="
+    0x36: ";"
+    0xA0: "ͬͤ"
+    0xA1: "0"
+    0xA2: "1"
+    0xA3: "2"
+    0xA4: "3"
+    0xA5: "4"
+    0xA6: "5"
+    0xA7: "6"
+    0xA8: "7"
+    0xA9: "8"
+    0xAA: "9"
+    0xAB: "!"
+    0xAC: "?"
+    0xAD: "."
+    0xBB: "A"
+    0xBC: "B"
+    0xBD: "C"
+    0xBE: "D"
+    0xBF: "E"
+    0xC0: "F"
+    0xC1: "G"
+    0xC2: "H"
+    0xC3: "I"
+    0xC4: "J"
+    0xC5: "K"
+    0xC6: "L"
+    0xC7: "M"
+    0xC8: "N"
+    0xC9: "O"
+    0xCA: "P"
+    0xCB: "Q"
+    0xCC: "R"
+    0xCD: "S"
+    0xCE: "T"
+    0xCF: "U"
+    0xD0: "V"
+    0xD1: "W"
+    0xD2: "X"
+    0xD3: "Y"
+    0xD4: "Z"
+    0xD5: "a"
+    0xD6: "b"
+    0xD7: "c"
+    0xD8: "d"
+    0xD9: "e"
+    0xDA: "f"
+    0xDB: "g"
+    0xDC: "h"
+    0xDD: "i"
+    0xDE: "j"
+    0xDF: "k"
+    0xE0: "l"
+    0xE1: "m"
+    0xE2: "n"
+    0xE3: "o"
+    0xE4: "p"
+    0xE5: "q"
+    0xE6: "r"
+    0xE7: "s"
+    0xE8: "t"
+    0xE9: "u"
+    0xEA: "v"
+    0xEB: "w"
+    0xEC: "x"
+    0xED: "y"
+    0xEE: "z"
+    0xEF: "▶"
+    0xF0: ":"
+    0xF1: "Ä"
+    0xF2: "Ö"
+    0xF3: "Ü"
+    0xF4: "ä"
+    0xF5: "ö"
+    0xF6: "ü"
+    0xF7: null
+    0xF8: null
+    0xF9: null
+    0xFA: null
+    0xFB: null
+    0xFC: null
+    0xFD: null
+    0xFE: null
+    0xFF: null #denotes padding
+  language:
+    0x01: "Japanese" #eggs will always have the japanese language
+    0x02: "English"
+    0x03: "French"
+    0x04: "Italian"
+    0x05: "German"
+    0x06: "Korean"
+    0x07: "Spanish"
+  # statusConditions: #unfinished, these are done with bits over the spam of 4 bytes
+  #   0x00: null
+  #   0x01: 
+  pokemon:
+    0x00: null
+    0x01: { pokedexNumber: 1, name: "Bulbasaur" }
+    0x02: { pokedexNumber: 2, name: "Ivysaur" }
+    0x03: { pokedexNumber: 3, name: "Venusaur" }
+    0x04: { pokedexNumber: 4, name: "Charmander" }
+    0x05: { pokedexNumber: 5, name: "Charmeleon" }
+    0x06: { pokedexNumber: 6, name: "Charizard" }
+    0x07: { pokedexNumber: 7, name: "Squirtle" }
+    0x08: { pokedexNumber: 8, name: "Wartortle" }
+    0x09: { pokedexNumber: 9, name: "Blastoise" }
+    0x0A: { pokedexNumber: 10, name: "Caterpie" } 
+    0x0B: { pokedexNumber: 11, name: "Metapod" }
+    0x0C: { pokedexNumber: 12, name: "Butterfree" } 
+    0x0D: { pokedexNumber: 13, name: "Weedle" }
+    0x0E: { pokedexNumber: 14, name: "Kakuna" }
+    0x0F: { pokedexNumber: 15, name: "Beedrill" }
+    0x10: { pokedexNumber: 16, name: "Pidgey" }
+    0x11: { pokedexNumber: 17, name: "Pidgeotto" }
+    0x12: { pokedexNumber: 18, name: "Pidgeot" }
+    0x13: { pokedexNumber: 19, name: "Rattata" }
+    0x14: { pokedexNumber: 20, name: "Raticate" }
+    0x15: { pokedexNumber: 21, name: "Spearow" }
+    0x16: { pokedexNumber: 22, name: "Fearow" }
+    0x17: { pokedexNumber: 23, name: "Ekans" }
+    0x18: { pokedexNumber: 24, name: "Arbok" }
+    0x19: { pokedexNumber: 25, name: "Pikachu" }
+    0x1A: { pokedexNumber: 26, name: "Raichu" }
+    0x1B: { pokedexNumber: 27, name: "Sandshrew" }
+    0x1C: { pokedexNumber: 28, name: "Sandslash" }
+    0x1D: { pokedexNumber: 29, name: "NidoranF" }
+    0x1E: { pokedexNumber: 30, name: "Nidorina" }
+    0x1F: { pokedexNumber: 31, name: "Nidoqueen" }
+    0x20: { pokedexNumber: 32, name: "NidoranM" }
+    0x21: { pokedexNumber: 33, name: "Nidorino" }
+    0x22: { pokedexNumber: 34, name: "Nidoking" }
+    0x23: { pokedexNumber: 35, name: "Clefairy" }
+    0x24: { pokedexNumber: 36, name: "Clefable" }
+    0x25: { pokedexNumber: 37, name: "Vulpix" }
+    0x26: { pokedexNumber: 38, name: "Ninetales" }
+    0x27: { pokedexNumber: 39, name: "Jigglypuff" }
+    0x28: { pokedexNumber: 40, name: "Wigglytuff" }
+    0x29: { pokedexNumber: 41, name: "Zubat" }
+    0x2A: { pokedexNumber: 42, name: "Golbat" }
+    0x2B: { pokedexNumber: 43, name: "Oddish" }
+    0x2C: { pokedexNumber: 44, name: "Gloom" }
+    0x2D: { pokedexNumber: 45, name: "Vileplume" }
+    0x2E: { pokedexNumber: 46, name: "Paras" }
+    0x2F: { pokedexNumber: 47, name: "Parasect" }
+    0x30: { pokedexNumber: 48, name: "Venonat" }
+    0x31: { pokedexNumber: 49, name: "Venomoth" }
+    0x32: { pokedexNumber: 50, name: "Diglett" }
+    0x33: { pokedexNumber: 51, name: "Dugtrio" }
+    0x34: { pokedexNumber: 52, name: "Meowth" }
+    0x35: { pokedexNumber: 53, name: "Persian" }
+    0x36: { pokedexNumber: 54, name: "Psyduck" }
+    0x37: { pokedexNumber: 55, name: "Golduck" }
+    0x38: { pokedexNumber: 56, name: "Mankey" }
+    0x39: { pokedexNumber: 57, name: "Primeape" }
+    0x3A: { pokedexNumber: 58, name: "Growlithe" }
+    0x3B: { pokedexNumber: 59, name: "Arcanine" }
+    0x3C: { pokedexNumber: 60, name: "Poliwag" }
+    0x3D: { pokedexNumber: 61, name: "Poliwhirl" }
+    0x3E: { pokedexNumber: 62, name: "Poliwrath" }
+    0x3F: { pokedexNumber: 63, name: "Abra" }
+    0x40: { pokedexNumber: 64, name: "Kadabra" }
+    0x41: { pokedexNumber: 65, name: "Alakazam" }
+    0x42: { pokedexNumber: 66, name: "Machop" }
+    0x43: { pokedexNumber: 67, name: "Machoke" }
+    0x44: { pokedexNumber: 68, name: "Machamp" }
+    0x45: { pokedexNumber: 69, name: "Bellsprout" }
+    0x46: { pokedexNumber: 70, name: "Weepinbell" }
+    0x47: { pokedexNumber: 71, name: "Victreebel" }
+    0x48: { pokedexNumber: 72, name: "Tentacool" }
+    0x49: { pokedexNumber: 73, name: "Tentacruel" }
+    0x4A: { pokedexNumber: 74, name: "Geodude" }
+    0x4B: { pokedexNumber: 75, name: "Graveler" }
+    0x4C: { pokedexNumber: 76, name: "Golem" }
+    0x4D: { pokedexNumber: 77, name: "Ponyta" }
+    0x4E: { pokedexNumber: 78, name: "Rapidash" }
+    0x4F: { pokedexNumber: 79, name: "Slowpoke" }
+    0x50: { pokedexNumber: 80, name: "Slowbro" }
+    0x51: { pokedexNumber: 81, name: "Magnemite" }
+    0x52: { pokedexNumber: 82, name: "Magneton" }
+    0x53: { pokedexNumber: 83, name: "Farfetch'd" }
+    0x54: { pokedexNumber: 84, name: "Doduo" }
+    0x55: { pokedexNumber: 85, name: "Dodrio" }
+    0x56: { pokedexNumber: 86, name: "Seel" }
+    0x57: { pokedexNumber: 87, name: "Dewgong" }
+    0x58: { pokedexNumber: 88, name: "Grimer" }
+    0x59: { pokedexNumber: 89, name: "Muk" }
+    0x5A: { pokedexNumber: 90, name: "Shellder" }
+    0x5B: { pokedexNumber: 91, name: "Cloyster" }
+    0x5C: { pokedexNumber: 92, name: "Gastly" }
+    0x5D: { pokedexNumber: 93, name: "Haunter" }
+    0x5E: { pokedexNumber: 94, name: "Gengar" }
+    0x5F: { pokedexNumber: 95, name: "Onix" }
+    0x60: { pokedexNumber: 96, name: "Drowzee" }
+    0x61: { pokedexNumber: 97, name: "Hypno" }
+    0x62: { pokedexNumber: 98, name: "Krabby" }
+    0x63: { pokedexNumber: 99, name: "Kingler" }
+    0x64: { pokedexNumber: 100, name: "Voltorb" }
+    0x65: { pokedexNumber: 101, name: "Electrode" }
+    0x66: { pokedexNumber: 102, name: "Exeggcute" }
+    0x67: { pokedexNumber: 103, name: "Exeggutor" }
+    0x68: { pokedexNumber: 104, name: "Cubone" }
+    0x69: { pokedexNumber: 105, name: "Marowak" } 
+    0x6A: { pokedexNumber: 106, name: "Hitmonlee" }
+    0x6B: { pokedexNumber: 107, name: "Hitmonchan" }
+    0x6C: { pokedexNumber: 108, name: "Lickitung" }
+    0x6D: { pokedexNumber: 109, name: "Koffing" }
+    0x6E: { pokedexNumber: 110, name: "Weezing" }
+    0x6F: { pokedexNumber: 111, name: "Rhyhorn" }
+    0x70: { pokedexNumber: 112, name: "Rhydon" }
+    0x71: { pokedexNumber: 113, name: "Chansey" }
+    0x72: { pokedexNumber: 114, name: "Tangela" }
+    0x73: { pokedexNumber: 115, name: "Kangaskhan" }
+    0x74: { pokedexNumber: 116, name: "Horsea" }
+    0x75: { pokedexNumber: 117, name: "Seadra" }
+    0x76: { pokedexNumber: 118, name: "Goldeen" }
+    0x77: { pokedexNumber: 119, name: "Seaking" }
+    0x78: { pokedexNumber: 120, name: "Staryu" }
+    0x79: { pokedexNumber: 121, name: "Starmie" }
+    0x7A: { pokedexNumber: 122, name: "Mr. Mime" }
+    0x7B: { pokedexNumber: 123, name: "Scyther" }
+    0x7C: { pokedexNumber: 124, name: "Jynx" }
+    0x7D: { pokedexNumber: 125, name: "Electabuzz" }
+    0x7E: { pokedexNumber: 126, name: "Magmar" }
+    0x7F: { pokedexNumber: 127, name: "Pinsir" }
+    0x80: { pokedexNumber: 128, name: "Tauros" }
+    0x81: { pokedexNumber: 129, name: "Magikarp" }
+    0x82: { pokedexNumber: 130, name: "Gyarados" }
+    0x83: { pokedexNumber: 131, name: "Lapras" }
+    0x84: { pokedexNumber: 132, name: "Ditto" }
+    0x85: { pokedexNumber: 133, name: "Eevee" }
+    0x86: { pokedexNumber: 134, name: "Vaporeon" }
+    0x87: { pokedexNumber: 135, name: "Jolteon" }
+    0x88: { pokedexNumber: 136, name: "Flareon" }
+    0x89: { pokedexNumber: 137, name: "Porygon" }
+    0x8A: { pokedexNumber: 138, name: "Omanyte" }
+    0x8B: { pokedexNumber: 139, name: "Omastar" }
+    0x8C: { pokedexNumber: 140, name: "Kabuto" }
+    0x8D: { pokedexNumber: 141, name: "Kabutops" }
+    0x8E: { pokedexNumber: 142, name: "Aerodactyl" }
+    0x8F: { pokedexNumber: 143, name: "Snorlax" }
+    0x90: { pokedexNumber: 144, name: "Articuno" }
+    0x91: { pokedexNumber: 145, name: "Zapdos" }
+    0x92: { pokedexNumber: 146, name: "Moltres" }
+    0x93: { pokedexNumber: 147, name: "Dratini" }
+    0x94: { pokedexNumber: 148, name: "Dragonair" }
+    0x95: { pokedexNumber: 149, name: "Dragonite" }
+    0x96: { pokedexNumber: 150, name: "Mewtwo" }
+    0x97: { pokedexNumber: 151, name: "Mew" }
+    0x98: { pokedexNumber: 152, name: "Chikorita" }
+    0x99: { pokedexNumber: 153, name: "Bayleef" }
+    0x9A: { pokedexNumber: 154, name: "Meganium" }
+    0x9B: { pokedexNumber: 155, name: "Cyndaquil" }
+    0x9C: { pokedexNumber: 156, name: "Quilava" }
+    0x9D: { pokedexNumber: 157, name: "Typhlosion" }
+    0x9E: { pokedexNumber: 158, name: "Totodile" }
+    0x9F: { pokedexNumber: 159, name: "Croconaw" }
+    0xA0: { pokedexNumber: 160, name: "Feraligatr" }
+    0xA1: { pokedexNumber: 161, name: "Sentret" }
+    0xA2: { pokedexNumber: 162, name: "Furret" }
+    0xA3: { pokedexNumber: 163, name: "Hoothoot" }
+    0xA4: { pokedexNumber: 164, name: "Noctowl" }
+    0xA5: { pokedexNumber: 165, name: "Ledyba" }
+    0xA6: { pokedexNumber: 166, name: "Ledian" }
+    0xA7: { pokedexNumber: 167, name: "Spinarak" }
+    0xA8: { pokedexNumber: 168, name: "Ariados" }
+    0xA9: { pokedexNumber: 169, name: "Crobat" }
+    0xAA: { pokedexNumber: 170, name: "Chinchou" }
+    0xAB: { pokedexNumber: 171, name: "Lanturn" }
+    0xAC: { pokedexNumber: 172, name: "Pichu" }
+    0xAD: { pokedexNumber: 173, name: "Cleffa" }
+    0xAE: { pokedexNumber: 174, name: "Igglybuff" }
+    0xAF: { pokedexNumber: 175, name: "Togepi" }
+    0xB0: { pokedexNumber: 176, name: "Togetic" }
+    0xB1: { pokedexNumber: 177, name: "Natu" }
+    0xB2: { pokedexNumber: 178, name: "Xatu" }
+    0xB3: { pokedexNumber: 179, name: "Mareep" }
+    0xB4: { pokedexNumber: 180, name: "Flaaffy" }
+    0xB5: { pokedexNumber: 181, name: "Ampharos" }
+    0xB6: { pokedexNumber: 182, name: "Bellossom" }
+    0xB7: { pokedexNumber: 183, name: "Marill" }
+    0xB8: { pokedexNumber: 184, name: "Azumarill" }
+    0xB9: { pokedexNumber: 185, name: "Sudowoodo" }
+    0xBA: { pokedexNumber: 186, name: "Politoed" }
+    0xBB: { pokedexNumber: 187, name: "Hoppip" }
+    0xBC: { pokedexNumber: 188, name: "Skiploom" }
+    0xBD: { pokedexNumber: 189, name: "Jumpluff" }
+    0xBE: { pokedexNumber: 190, name: "Aipom" }
+    0xBF: { pokedexNumber: 191, name: "Sunkern" }
+    0xC0: { pokedexNumber: 192, name: "Sunflora" }
+    0xC1: { pokedexNumber: 193, name: "Yanma" }
+    0xC2: { pokedexNumber: 194, name: "Wooper" }
+    0xC3: { pokedexNumber: 195, name: "Quagsire" }
+    0xC4: { pokedexNumber: 196, name: "Espeon" }
+    0xC5: { pokedexNumber: 197, name: "Umbreon" }
+    0xC6: { pokedexNumber: 198, name: "Murkrow" }
+    0xC7: { pokedexNumber: 199, name: "Slowking" }
+    0xC8: { pokedexNumber: 200, name: "Misdreavus" }
+    0xC9: { pokedexNumber: 201, name: "Unown" }
+    0xCA: { pokedexNumber: 202, name: "Wobbuffet" }
+    0xCB: { pokedexNumber: 203, name: "Girafarig" }
+    0xCC: { pokedexNumber: 204, name: "Pineco" }
+    0xCD: { pokedexNumber: 205, name: "Forretress" }
+    0xCE: { pokedexNumber: 206, name: "Dunsparce" }
+    0xCF: { pokedexNumber: 207, name: "Gligar" }
+    0xD0: { pokedexNumber: 208, name: "Steelix" }
+    0xD1: { pokedexNumber: 209, name: "Snubbull" }
+    0xD2: { pokedexNumber: 210, name: "Granbull" }
+    0xD3: { pokedexNumber: 211, name: "Qwillfish" }
+    0xD4: { pokedexNumber: 212, name: "Scizor" }
+    0xD5: { pokedexNumber: 213, name: "Shuckle" }
+    0xD6: { pokedexNumber: 214, name: "Heracross" }
+    0xD7: { pokedexNumber: 215, name: "Sneasel" }
+    0xD8: { pokedexNumber: 216, name: "Teddiursa" }
+    0xD9: { pokedexNumber: 217, name: "Ursaring" }
+    0xDA: { pokedexNumber: 218, name: "Slugma" }
+    0xDB: { pokedexNumber: 219, name: "Magcargo" }
+    0xDC: { pokedexNumber: 220, name: "Swinub" }
+    0xDD: { pokedexNumber: 221, name: "Piloswine" }
+    0xDE: { pokedexNumber: 222, name: "Corsola" }
+    0xDF: { pokedexNumber: 223, name: "Remoraid" }
+    0xE0: { pokedexNumber: 224, name: "Octillery" }
+    0xE1: { pokedexNumber: 225, name: "Delibird" }
+    0xE2: { pokedexNumber: 226, name: "Mantine" }
+    0xE3: { pokedexNumber: 227, name: "Skarmory" }
+    0xE4: { pokedexNumber: 228, name: "Houndour" }
+    0xE5: { pokedexNumber: 229, name: "Houndoom" }
+    0xE6: { pokedexNumber: 230, name: "Kingdra" }
+    0xE7: { pokedexNumber: 231, name: "Phanpy" }
+    0xE8: { pokedexNumber: 232, name: "Donphan" }
+    0xE9: { pokedexNumber: 233, name: "Porygon2" }
+    0xEA: { pokedexNumber: 234, name: "Stantler" }
+    0xEB: { pokedexNumber: 235, name: "Smeargle" }
+    0xEC: { pokedexNumber: 236, name: "Tyrogue" }
+    0xED: { pokedexNumber: 237, name: "Hitmontop" }
+    0xEE: { pokedexNumber: 238, name: "Smoochum" }
+    0xEF: { pokedexNumber: 239, name: "Elekid" }
+    0xF0: { pokedexNumber: 240, name: "Magby" }
+    0xF1: { pokedexNumber: 241, name: "Miltank" }
+    0xF2: { pokedexNumber: 242, name: "Blissey" }
+    0xF3: { pokedexNumber: 243, name: "Raikou" }
+    0xF4: { pokedexNumber: 244, name: "Entei" }
+    0xF5: { pokedexNumber: 245, name: "Suicune" }
+    0xF6: { pokedexNumber: 246, name: "Larvitar" }
+    0xF7: { pokedexNumber: 247, name: "Pupitar" }
+    0xF8: { pokedexNumber: 248, name: "Tyranitar" }
+    0xF9: { pokedexNumber: 249, name: "Lugia" }
+    0xFA: { pokedexNumber: 250, name: "Ho-oh" }
+    0xFB: { pokedexNumber: 251, name: "Celebi" }
+    0xFC: null
+    0xFD: null
+    0xFE: null
+    0xFF: null
+    0x100: null
+    0x101: null
+    0x102: null
+    0x103: null
+    0x104: null
+    0x105: null
+    0x106: null
+    0x107: null
+    0x108: null
+    0x109: null
+    0x10A: null
+    0x10B: null
+    0x10C: null
+    0x10D: null
+    0x10E: null
+    0x10F: null
+    0x110: null
+    0x111: null
+    0x112: null
+    0x113: null
+    0x114: null
+    0x115: { pokedexNumber: 252, name: "Treecko" }
+    0x116: { pokedexNumber: 253, name: "Grovyle" }
+    0x117: { pokedexNumber: 254, name: "Sceptile" }
+    0x118: { pokedexNumber: 255, name: "Torchic" }
+    0x119: { pokedexNumber: 256, name: "Combusken" }
+    0x11A: { pokedexNumber: 257, name: "Blaziken" }
+    0x11B: { pokedexNumber: 258, name: "Mudkip" }
+    0x11C: { pokedexNumber: 259, name: "Marshtomp" }
+    0x11D: { pokedexNumber: 260, name: "Swampert" }
+    0x11E: { pokedexNumber: 261, name: "Poochyena" }
+    0x11F: { pokedexNumber: 262, name: "Mightyena" }
+    0x120: { pokedexNumber: 263, name: "Zigzagoon" }
+    0x121: { pokedexNumber: 264, name: "Linoone" }
+    0x122: { pokedexNumber: 265, name: "Wurmple" }
+    0x123: { pokedexNumber: 266, name: "Silcoon" }
+    0x124: { pokedexNumber: 267, name: "Beautifly" }
+    0x125: { pokedexNumber: 268, name: "Cascoon" }
+    0x126: { pokedexNumber: 269, name: "Dustox" }
+    0x127: { pokedexNumber: 270, name: "Lotad" }
+    0x128: { pokedexNumber: 271, name: "Lombre" }
+    0x129: { pokedexNumber: 272, name: "Ludicolo" }
+    0x12A: { pokedexNumber: 273, name: "Seedot" }
+    0x12B: { pokedexNumber: 274, name: "Nuzleaf" }
+    0x12C: { pokedexNumber: 275, name: "Shiftry" }
+    0x12D: { pokedexNumber: 290, name: "Nincada" }
+    0x12E: { pokedexNumber: 291, name: "Ninjask" }
+    0x12F: { pokedexNumber: 292, name: "Shedinja" }
+    0x130: { pokedexNumber: 276, name: "Taillow" }
+    0x131: { pokedexNumber: 277, name: "Swellow" }
+    0x132: { pokedexNumber: 285, name: "Shroomish" }
+    0x133: { pokedexNumber: 286, name: "Breloom" }
+    0x134: { pokedexNumber: 327, name: "Spinda" } 
+    0x135: { pokedexNumber: 278, name: "Wingull" }
+    0x136: { pokedexNumber: 279, name: "Pelipper" }
+    0x137: { pokedexNumber: 283, name: "Surskit" }
+    0x138: { pokedexNumber: 284, name: "Masquerain" }
+    0x139: { pokedexNumber: 320, name: "Wailmer" }
+    0x13A: { pokedexNumber: 321, name: "Wailord" }
+    0x13B: { pokedexNumber: 300, name: "Skitty" }
+    0x13C: { pokedexNumber: 301, name: "Delcatty" }
+    0x13D: { pokedexNumber: 352, name: "Kecleon" }
+    0x13E: { pokedexNumber: 343, name: "Baltoy" }
+    0x13F: { pokedexNumber: 344, name: "Claydol" }
+    0x140: { pokedexNumber: 299, name: "Nosepass" }
+    0x141: { pokedexNumber: 324, name: "Torkoal" }
+    0x142: { pokedexNumber: 302, name: "Sableye" }
+    0x143: { pokedexNumber: 339, name: "Barboach" }
+    0x144: { pokedexNumber: 340, name: "Whiscash" }
+    0x145: { pokedexNumber: 370, name: "Luvdisc" }
+    0x146: { pokedexNumber: 341, name: "Corphish" }
+    0x147: { pokedexNumber: 342, name: "Crawdaunt" }
+    0x148: { pokedexNumber: 349, name: "Feebas" }
+    0x149: { pokedexNumber: 350, name: "Milotic" }
+    0x14A: { pokedexNumber: 318, name: "Carvanha" }
+    0x14B: { pokedexNumber: 319, name: "Sharpedo" }
+    0x14C: { pokedexNumber: 328, name: "Trapinch" }
+    0x14D: { pokedexNumber: 329, name: "Vibrava" }
+    0x14E: { pokedexNumber: 330, name: "Flygon" }
+    0x14F: { pokedexNumber: 296, name: "Makuhita" }
+    0x150: { pokedexNumber: 297, name: "Hariyama" }
+    0x151: { pokedexNumber: 309, name: "Electrike" }
+    0x152: { pokedexNumber: 310, name: "Manectric" }
+    0x153: { pokedexNumber: 322, name: "Numel" }
+    0x154: { pokedexNumber: 323, name: "Camerupt" }
+    0x155: { pokedexNumber: 363, name: "Spheal" }
+    0x156: { pokedexNumber: 364, name: "Sealeo" }
+    0x157: { pokedexNumber: 365, name: "Walrein" }
+    0x158: { pokedexNumber: 331, name: "Cacnea" }
+    0x159: { pokedexNumber: 332, name: "Cacturne" }
+    0x15A: { pokedexNumber: 361, name: "Snorunt" }
+    0x15B: { pokedexNumber: 362, name: "Glalie" }
+    0x15C: { pokedexNumber: 337, name: "Lunatone" }
+    0x15D: { pokedexNumber: 338, name: "Solrock" }
+    0x15E: { pokedexNumber: 298, name: "Azurill" }
+    0x15F: { pokedexNumber: 325, name: "Spoink" }
+    0x160: { pokedexNumber: 326, name: "Grumpig" }
+    0x161: { pokedexNumber: 311, name: "Plusle" }
+    0x162: { pokedexNumber: 312, name: "Minun" }
+    0x163: { pokedexNumber: 303, name: "Mawile" }
+    0x164: { pokedexNumber: 307, name: "Meditite" }
+    0x165: { pokedexNumber: 308, name: "Medicham" }
+    0x166: { pokedexNumber: 333, name: "Swablu" }
+    0x167: { pokedexNumber: 334, name: "Altaria" }
+    0x168: { pokedexNumber: 360, name: "Wynaut" }
+    0x169: { pokedexNumber: 355, name: "Duskull" }
+    0x16A: { pokedexNumber: 356, name: "Dusclops" }
+    0x16B: { pokedexNumber: 315, name: "Roselia" }
+    0x16C: { pokedexNumber: 287, name: "Slakoth" }
+    0x16D: { pokedexNumber: 288, name: "Vigoroth" }
+    0x16E: { pokedexNumber: 289, name: "Slaking" }
+    0x16F: { pokedexNumber: 316, name: "Gulpin" }
+    0x170: { pokedexNumber: 317, name: "Swalot" }
+    0x171: { pokedexNumber: 357, name: "Tropius" }
+    0x172: { pokedexNumber: 293, name: "Whismur" }
+    0x173: { pokedexNumber: 294, name: "Loudred" }
+    0x174: { pokedexNumber: 295, name: "Exploud" }
+    0x175: { pokedexNumber: 366, name: "Clamperl" }
+    0x176: { pokedexNumber: 367, name: "Huntail" }
+    0x177: { pokedexNumber: 368, name: "Gorebyss" }
+    0x178: { pokedexNumber: 359, name: "Absol" } 
+    0x179: { pokedexNumber: 353, name: "Shuppet" }
+    0x17A: { pokedexNumber: 354, name: "Banette" } 
+    0x17B: { pokedexNumber: 336, name: "Seviper" }
+    0x17C: { pokedexNumber: 335, name: "Zangoose" }
+    0x17D: { pokedexNumber: 369, name: "Relicanth" } 
+    0x17E: { pokedexNumber: 304, name: "Aron" }
+    0x17F: { pokedexNumber: 305, name: "Lairon" }
+    0x180: { pokedexNumber: 306, name: "Aggron" } 
+    0x181: { pokedexNumber: 351, name: "Castform" } 
+    0x182: { pokedexNumber: 313, name: "Volbeat" }
+    0x183: { pokedexNumber: 314, name: "Illumise" } 
+    0x184: { pokedexNumber: 345, name: "Lileep" }
+    0x185: { pokedexNumber: 346, name: "Cradily" }
+    0x186: { pokedexNumber: 347, name: "Anorith" }
+    0x187: { pokedexNumber: 348, name: "Armaldo" } 
+    0x188: { pokedexNumber: 280, name: "Ralts" }
+    0x189: { pokedexNumber: 281, name: "Kirlia" }
+    0x18A: { pokedexNumber: 282, name: "Gardevoir" } 
+    0x18B: { pokedexNumber: 371, name: "Bagon" }
+    0x18C: { pokedexNumber: 372, name: "Shelgon" }
+    0x18D: { pokedexNumber: 373, name: "Salamence" }
+    0x18E: { pokedexNumber: 374, name: "Beldum" }
+    0x18F: { pokedexNumber: 375, name: "Metang" }
+    0x190: { pokedexNumber: 376, name: "Metagross" }
+    0x191: { pokedexNumber: 377, name: "Regirock" }
+    0x192: { pokedexNumber: 378, name: "Regice" }
+    0x193: { pokedexNumber: 379, name: "Registeel" }
+    0x194: { pokedexNumber: 382, name: "Kyogre" }
+    0x195: { pokedexNumber: 383, name: "Groudon" }
+    0x196: { pokedexNumber: 384, name: "Rayquaza" }
+    0x197: { pokedexNumber: 380, name: "Latias" }
+    0x198: { pokedexNumber: 381, name: "Latios" }
+    0x199: { pokedexNumber: 385, name: "Jirachi" }
+    0x19A: { pokedexNumber: 386, name: "Deoxys" }
+    0x19B: { pokedexNumber: 358, name: "Chimecho" }
+    0x19C: { pokedexNumber: null, name: "Pokemon Egg" }
+    0x19D: { pokedexNumber: 201, name: "Unown" }
+    0x19E: { pokedexNumber: 201, name: "Unown" }
+  pokemonPokedexNumbers:
+    0x00: null
+    0x01: 1
+    0x02: 2
+    0x03: 3
+    0x04: 4
+    0x05: 5
+    0x06: 6
+    0x07: 7
+    0x08: 8
+    0x09: 9
+    0x0A: 10
+    0x0B: 11
+    0x0C: 12
+    0x0D: 13
+    0x0E: 14
+    0x0F: 15
+    0x10: 16
+    0x11: 17
+    0x12: 18
+    0x13: 19
+    0x14: 20
+    0x15: 21
+    0x16: 22
+    0x17: 23
+    0x18: 24
+    0x19: 25
+    0x1A: 26
+    0x1B: 27
+    0x1C: 28
+    0x1D: 29
+    0x1E: 30
+    0x1F: 31
+    0x20: 32
+    0x21: 33
+    0x22: 34
+    0x23: 35
+    0x24: 36
+    0x25: 37
+    0x26: 38
+    0x27: 39
+    0x28: 40
+    0x29: 41
+    0x2A: 42
+    0x2B: 43
+    0x2C: 44
+    0x2D: 45
+    0x2E: 46
+    0x2F: 47
+    0x30: 48
+    0x31: 49
+    0x32: 50
+    0x33: 51
+    0x34: 52
+    0x35: 53
+    0x36: 54
+    0x37: 55
+    0x38: 56
+    0x39: 57
+    0x3A: 58
+    0x3B: 59
+    0x3C: 60
+    0x3D: 61
+    0x3E: 62
+    0x3F: 63
+    0x40: 64
+    0x41: 65
+    0x42: 66
+    0x43: 67
+    0x44: 68
+    0x45: 69
+    0x46: 70
+    0x47: 71
+    0x48: 72
+    0x49: 73
+    0x4A: 74
+    0x4B: 75
+    0x4C: 76
+    0x4D: 77
+    0x4E: 78
+    0x4F: 79
+    0x50: 80
+    0x51: 81
+    0x52: 82
+    0x53: 83
+    0x54: 84
+    0x55: 85
+    0x56: 86
+    0x57: 87
+    0x58: 88
+    0x59: 89
+    0x5A: 90
+    0x5B: 91
+    0x5C: 92
+    0x5D: 93
+    0x5E: 94
+    0x5F: 95
+    0x60: 96
+    0x61: 97
+    0x62: 98
+    0x63: 99
+    0x64: 100
+    0x65: 101
+    0x66: 102
+    0x67: 103
+    0x68: 104
+    0x69: 105
+    0x6A: 106
+    0x6B: 107
+    0x6C: 108
+    0x6D: 109
+    0x6E: 110
+    0x6F: 111
+    0x70: 112
+    0x71: 113
+    0x72: 114
+    0x73: 115
+    0x74: 116
+    0x75: 117
+    0x76: 118
+    0x77: 119
+    0x78: 120
+    0x79: 121
+    0x7A: 122
+    0x7B: 123
+    0x7C: 124
+    0x7D: 125
+    0x7E: 126
+    0x7F: 127
+    0x80: 128
+    0x81: 129
+    0x82: 130
+    0x83: 131
+    0x84: 132
+    0x85: 133
+    0x86: 134
+    0x87: 135
+    0x88: 136
+    0x89: 137
+    0x8A: 138
+    0x8B: 139
+    0x8C: 140
+    0x8D: 141
+    0x8E: 142
+    0x8F: 143
+    0x90: 144
+    0x91: 145
+    0x92: 146
+    0x93: 147
+    0x94: 148
+    0x95: 149
+    0x96: 150
+    0x97: 151
+    0x98: 152
+    0x99: 153
+    0x9A: 154
+    0x9B: 155
+    0x9C: 156
+    0x9D: 157
+    0x9E: 158
+    0x9F: 159
+    0xA0: 160
+    0xA1: 161
+    0xA2: 162
+    0xA3: 163
+    0xA4: 164
+    0xA5: 165
+    0xA6: 166
+    0xA7: 167
+    0xA8: 168
+    0xA9: 169
+    0xAA: 170
+    0xAB: 171
+    0xAC: 172
+    0xAD: 173
+    0xAE: 174
+    0xAF: 175
+    0xB0: 176
+    0xB1: 177
+    0xB2: 178
+    0xB3: 179
+    0xB4: 180
+    0xB5: 181
+    0xB6: 182
+    0xB7: 183
+    0xB8: 184
+    0xB9: 185
+    0xBA: 186
+    0xBB: 187
+    0xBC: 188
+    0xBD: 189
+    0xBE: 190
+    0xBF: 191
+    0xC0: 192
+    0xC1: 193
+    0xC2: 194
+    0xC3: 195
+    0xC4: 196
+    0xC5: 197
+    0xC6: 198
+    0xC7: 199
+    0xC8: 200
+    0xC9: 201
+    0xCA: 202
+    0xCB: 203
+    0xCC: 204
+    0xCD: 205
+    0xCE: 206
+    0xCF: 207
+    0xD0: 208
+    0xD1: 209
+    0xD2: 210
+    0xD3: 211
+    0xD4: 212
+    0xD5: 213
+    0xD6: 214
+    0xD7: 215
+    0xD8: 216
+    0xD9: 217
+    0xDA: 218
+    0xDB: 219
+    0xDC: 220
+    0xDD: 221
+    0xDE: 222
+    0xDF: 223
+    0xE0: 224
+    0xE1: 225
+    0xE2: 226
+    0xE3: 227
+    0xE4: 228
+    0xE5: 229
+    0xE6: 230
+    0xE7: 231
+    0xE8: 232
+    0xE9: 233
+    0xEA: 234
+    0xEB: 235
+    0xEC: 236
+    0xED: 237
+    0xEE: 238
+    0xEF: 239
+    0xF0: 240
+    0xF1: 241
+    0xF2: 242
+    0xF3: 243
+    0xF4: 244
+    0xF5: 245
+    0xF6: 246
+    0xF7: 247
+    0xF8: 248
+    0xF9: 249
+    0xFA: 250
+    0xFB: 251
+    0xFC: null
+    0xFD: null
+    0xFE: null
+    0xFF: null
+    0x100: null
+    0x101: null
+    0x102: null
+    0x103: null
+    0x104: null
+    0x105: null
+    0x106: null
+    0x107: null
+    0x108: null
+    0x109: null
+    0x10A: null
+    0x10B: null
+    0x10C: null
+    0x10D: null
+    0x10E: null
+    0x10F: null
+    0x110: null
+    0x111: null
+    0x112: null
+    0x113: null
+    0x114: null
+    0x115: 252
+    0x116: 253
+    0x117: 254
+    0x118: 255
+    0x119: 256
+    0x11A: 257
+    0x11B: 258
+    0x11C: 259
+    0x11D: 260
+    0x11E: 261
+    0x11F: 262
+    0x120: 263
+    0x121: 264
+    0x122: 265
+    0x123: 266
+    0x124: 267
+    0x125: 268
+    0x126: 269
+    0x127: 270
+    0x128: 271
+    0x129: 272
+    0x12A: 273
+    0x12B: 274
+    0x12C: 275
+    0x12D: 290
+    0x12E: 291
+    0x12F: 292
+    0x130: 276
+    0x131: 277
+    0x132: 285
+    0x133: 286
+    0x134: 327
+    0x135: 278
+    0x136: 279
+    0x137: 283
+    0x138: 284
+    0x139: 320
+    0x13A: 321
+    0x13B: 300
+    0x13C: 301
+    0x13D: 352
+    0x13E: 343
+    0x13F: 344
+    0x140: 299
+    0x141: 324
+    0x142: 302
+    0x143: 339
+    0x144: 340
+    0x145: 370
+    0x146: 341
+    0x147: 342
+    0x148: 349
+    0x149: 350
+    0x14A: 318
+    0x14B: 319
+    0x14C: 328
+    0x14D: 329
+    0x14E: 330
+    0x14F: 296
+    0x150: 297
+    0x151: 309
+    0x152: 310
+    0x153: 322
+    0x154: 323
+    0x155: 363
+    0x156: 364
+    0x157: 365
+    0x158: 331
+    0x159: 332
+    0x15A: 361
+    0x15B: 362
+    0x15C: 337
+    0x15D: 338
+    0x15E: 298
+    0x15F: 325
+    0x160: 326
+    0x161: 311
+    0x162: 312
+    0x163: 303
+    0x164: 307
+    0x165: 308
+    0x166: 333
+    0x167: 334
+    0x168: 360
+    0x169: 355
+    0x16A: 356
+    0x16B: 315
+    0x16C: 287
+    0x16D: 288
+    0x16E: 289
+    0x16F: 316
+    0x170: 317
+    0x171: 357
+    0x172: 293
+    0x173: 294
+    0x174: 295
+    0x175: 366
+    0x176: 367
+    0x177: 368
+    0x178: 359
+    0x179: 353
+    0x17A: 354
+    0x17B: 336
+    0x17C: 335
+    0x17D: 369
+    0x17E: 304
+    0x17F: 305
+    0x180: 306
+    0x181: 351
+    0x182: 313
+    0x183: 314
+    0x184: 345
+    0x185: 346
+    0x186: 347
+    0x187: 348
+    0x188: 280
+    0x189: 281
+    0x18A: 282
+    0x18B: 371
+    0x18C: 372
+    0x18D: 373
+    0x18E: 374
+    0x18F: 375
+    0x190: 376
+    0x191: 377
+    0x192: 378
+    0x193: 379
+    0x194: 382
+    0x195: 383
+    0x196: 384
+    0x197: 380
+    0x198: 381
+    0x199: 385
+    0x19A: 386
+    0x19B: 358
+    0x19C: null
+    0x19D: 201
+    0x19E: 201
+  pokemonSpecies:
+    0x00: null
+    0x01: Bulbasaur
+    0x02: Ivysaur
+    0x03: Venusaur
+    0x04: Charmander
+    0x05: Charmeleon
+    0x06: Charizard
+    0x07: Squirtle
+    0x08: Wartortle
+    0x09: Blastoise
+    0x0A: Caterpie"
+    0x0B: Metapod
+    0x0C: Butterfree
+    0x0D: Weedle
+    0x0E: Kakuna
+    0x0F: Beedrill
+    0x10: Pidgey
+    0x11: Pidgeotto
+    0x12: Pidgeot
+    0x13: Rattata
+    0x14: Raticate
+    0x15: Spearow
+    0x16: Fearow
+    0x17: Ekans
+    0x18: Arbok
+    0x19: Pikachu
+    0x1A: Raichu
+    0x1B: Sandshrew
+    0x1C: Sandslash
+    0x1D: NidoranF
+    0x1E: Nidorina
+    0x1F: Nidoqueen
+    0x20: NidoranM
+    0x21: Nidorino
+    0x22: Nidoking
+    0x23: Clefairy
+    0x24: Clefable
+    0x25: Vulpix
+    0x26: Ninetales
+    0x27: Jigglypuff
+    0x28: Wigglytuff
+    0x29: Zubat
+    0x2A: Golbat
+    0x2B: Oddish
+    0x2C: Gloom
+    0x2D: Vileplume
+    0x2E: Paras
+    0x2F: Parasect
+    0x30: Venonat
+    0x31: Venomoth
+    0x32: Diglett
+    0x33: Dugtrio
+    0x34: Meowth
+    0x35: Persian
+    0x36: Psyduck
+    0x37: Golduck
+    0x38: Mankey
+    0x39: Primeape
+    0x3A: Growlithe
+    0x3B: Arcanine
+    0x3C: Poliwag
+    0x3D: Poliwhirl
+    0x3E: Poliwrath
+    0x3F: Abra
+    0x40: Kadabra
+    0x41: Alakazam
+    0x42: Machop
+    0x43: Machoke
+    0x44: Machamp
+    0x45: Bellsprout
+    0x46: Weepinbell
+    0x47: Victreebel
+    0x48: Tentacool
+    0x49: Tentacruel
+    0x4A: Geodude
+    0x4B: Graveler
+    0x4C: Golem
+    0x4D: Ponyta
+    0x4E: Rapidash
+    0x4F: Slowpoke
+    0x50: Slowbro
+    0x51: Magnemite
+    0x52: Magneton
+    0x53: Farfetch'd
+    0x54: Doduo
+    0x55: Dodrio
+    0x56: Seel
+    0x57: Dewgong
+    0x58: Grimer
+    0x59: Muk
+    0x5A: Shellder
+    0x5B: Cloyster
+    0x5C: Gastly
+    0x5D: Haunter
+    0x5E: Gengar
+    0x5F: Onix
+    0x60: Drowzee
+    0x61: Hypno
+    0x62: Krabby
+    0x63: Kingler
+    0x64: Voltorb
+    0x65: Electrode
+    0x66: Exeggcute
+    0x67: Exeggutor
+    0x68: Cubone
+    0x69: Marowak
+    0x6A: Hitmonlee
+    0x6B: Hitmonchan
+    0x6C: Lickitung
+    0x6D: Koffing
+    0x6E: Weezing
+    0x6F: Rhyhorn
+    0x70: Rhydon
+    0x71: Chansey
+    0x72: Tangela
+    0x73: Kangaskhan
+    0x74: Horsea
+    0x75: Seadra
+    0x76: Goldeen
+    0x77: Seaking
+    0x78: Staryu
+    0x79: Starmie
+    0x7A: Mr. Mime
+    0x7B: Scyther
+    0x7C: Jynx
+    0x7D: Electabuzz
+    0x7E: Magmar
+    0x7F: Pinsir
+    0x80: Tauros
+    0x81: Magikarp
+    0x82: Gyarados
+    0x83: Lapras
+    0x84: Ditto
+    0x85: Eevee
+    0x86: Vaporeon
+    0x87: Jolteon
+    0x88: Flareon
+    0x89: Porygon
+    0x8A: Omanyte
+    0x8B: Omastar
+    0x8C: Kabuto
+    0x8D: Kabutops
+    0x8E: Aerodactyl
+    0x8F: Snorlax
+    0x90: Articuno
+    0x91: Zapdos
+    0x92: Moltres
+    0x93: Dratini
+    0x94: Dragonair
+    0x95: Dragonite
+    0x96: Mewtwo
+    0x97: Mew
+    0x98: Chikorita
+    0x99: Bayleef
+    0x9A: Meganium
+    0x9B: Cyndaquil
+    0x9C: Quilava
+    0x9D: Typhlosion
+    0x9E: Totodile
+    0x9F: Croconaw
+    0xA0: Feraligatr
+    0xA1: Sentret
+    0xA2: Furret
+    0xA3: Hoothoot
+    0xA4: Noctowl
+    0xA5: Ledyba
+    0xA6: Ledian
+    0xA7: Spinarak
+    0xA8: Ariados
+    0xA9: Crobat
+    0xAA: Chinchou
+    0xAB: Lanturn
+    0xAC: Pichu
+    0xAD: Cleffa
+    0xAE: Igglybuff
+    0xAF: Togepi
+    0xB0: Togetic
+    0xB1: Natu
+    0xB2: Xatu
+    0xB3: Mareep
+    0xB4: Flaaffy
+    0xB5: Ampharos
+    0xB6: Bellossom
+    0xB7: Marill
+    0xB8: Azumarill
+    0xB9: Sudowoodo
+    0xBA: Politoed
+    0xBB: Hoppip
+    0xBC: Skiploom
+    0xBD: Jumpluff
+    0xBE: Aipom
+    0xBF: Sunkern
+    0xC0: Sunflora
+    0xC1: Yanma
+    0xC2: Wooper
+    0xC3: Quagsire
+    0xC4: Espeon
+    0xC5: Umbreon
+    0xC6: Murkrow
+    0xC7: Slowking
+    0xC8: Misdreavus
+    0xC9: Unown
+    0xCA: Wobbuffet
+    0xCB: Girafarig
+    0xCC: Pineco
+    0xCD: Forretress
+    0xCE: Dunsparce
+    0xCF: Gligar
+    0xD0: Steelix
+    0xD1: Snubbull
+    0xD2: Granbull
+    0xD3: Qwillfish
+    0xD4: Scizor
+    0xD5: Shuckle
+    0xD6: Heracross
+    0xD7: Sneasel
+    0xD8: Teddiursa
+    0xD9: Ursaring
+    0xDA: Slugma
+    0xDB: Magcargo
+    0xDC: Swinub
+    0xDD: Piloswine
+    0xDE: Corsola
+    0xDF: Remoraid
+    0xE0: Octillery
+    0xE1: Delibird
+    0xE2: Mantine
+    0xE3: Skarmory
+    0xE4: Houndour
+    0xE5: Houndoom
+    0xE6: Kingdra
+    0xE7: Phanpy
+    0xE8: Donphan
+    0xE9: Porygon2
+    0xEA: Stantler
+    0xEB: Smeargle
+    0xEC: Tyrogue
+    0xED: Hitmontop
+    0xEE: Smoochum
+    0xEF: Elekid
+    0xF0: Magby
+    0xF1: Miltank
+    0xF2: Blissey
+    0xF3: Raikou
+    0xF4: Entei
+    0xF5: Suicune
+    0xF6: Larvitar
+    0xF7: Pupitar
+    0xF8: Tyranitar
+    0xF9: Lugia
+    0xFA: Ho-oh
+    0xFB: Celebi
+    0xFC: null
+    0xFD: null
+    0xFE: null
+    0xFF: null
+    0x100: null
+    0x101: null
+    0x102: null
+    0x103: null
+    0x104: null
+    0x105: null
+    0x106: null
+    0x107: null
+    0x108: null
+    0x109: null
+    0x10A: null
+    0x10B: null
+    0x10C: null
+    0x10D: null
+    0x10E: null
+    0x10F: null
+    0x110: null
+    0x111: null
+    0x112: null
+    0x113: null
+    0x114: null
+    0x115: Treecko
+    0x116: Grovyle
+    0x117: Sceptile
+    0x118: Torchic
+    0x119: Combusken
+    0x11A: Blaziken
+    0x11B: Mudkip
+    0x11C: Marshtomp
+    0x11D: Swampert
+    0x11E: Poochyena
+    0x11F: Mightyena
+    0x120: Zigzagoon
+    0x121: Linoone
+    0x122: Wurmple
+    0x123: Silcoon
+    0x124: Beautifly
+    0x125: Cascoon
+    0x126: Dustox
+    0x127: Lotad
+    0x128: Lombre
+    0x129: Ludicolo
+    0x12A: Seedot
+    0x12B: Nuzleaf
+    0x12C: Shiftry
+    0x12D: Nincada
+    0x12E: Ninjask
+    0x12F: Shedinja
+    0x130: Taillow
+    0x131: Swellow
+    0x132: Shroomish
+    0x133: Breloom
+    0x134: Spinda
+    0x135: Wingull
+    0x136: Pelipper
+    0x137: Surskit
+    0x138: Masquerain
+    0x139: Wailmer
+    0x13A: Wailord
+    0x13B: Skitty
+    0x13C: Delcatty
+    0x13D: Kecleon
+    0x13E: Baltoy
+    0x13F: Claydol
+    0x140: Nosepass
+    0x141: Torkoal
+    0x142: Sableye
+    0x143: Barboach
+    0x144: Whiscash
+    0x145: Luvdisc
+    0x146: Corphish
+    0x147: Crawdaunt
+    0x148: Feebas
+    0x149: Milotic
+    0x14A: Carvanha
+    0x14B: Sharpedo
+    0x14C: Trapinch
+    0x14D: Vibrava
+    0x14E: Flygon
+    0x14F: Makuhita
+    0x150: Hariyama
+    0x151: Electrike
+    0x152: Manectric
+    0x153: Numel
+    0x154: Camerupt
+    0x155: Spheal
+    0x156: Sealeo
+    0x157: Walrein
+    0x158: Cacnea
+    0x159: Cacturne
+    0x15A: Snorunt
+    0x15B: Glalie
+    0x15C: Lunatone
+    0x15D: Solrock
+    0x15E: Azurill
+    0x15F: Spoink
+    0x160: Grumpig
+    0x161: Plusle
+    0x162: Minun
+    0x163: Mawile
+    0x164: Meditite
+    0x165: Medicham
+    0x166: Swablu
+    0x167: Altaria
+    0x168: Wynaut
+    0x169: Duskull
+    0x16A: Dusclops
+    0x16B: Roselia
+    0x16C: Slakoth
+    0x16D: Vigoroth
+    0x16E: Slaking
+    0x16F: Gulpin
+    0x170: Swalot
+    0x171: Tropius
+    0x172: Whismur
+    0x173: Loudred
+    0x174: Exploud
+    0x175: Clamperl
+    0x176: Huntail
+    0x177: Gorebyss
+    0x178: Absol
+    0x179: Shuppet
+    0x17A: Banette
+    0x17B: Seviper
+    0x17C: Zangoose
+    0x17D: Relicanth
+    0x17E: Aron
+    0x17F: Lairon
+    0x180: Aggron
+    0x181: Castform
+    0x182: Volbeat
+    0x183: Illumise
+    0x184: Lileep
+    0x185: Cradily
+    0x186: Anorith
+    0x187: Armaldo
+    0x188: Ralts
+    0x189: Kirlia
+    0x18A: Gardevoir
+    0x18B: Bagon
+    0x18C: Shelgon
+    0x18D: Salamence
+    0x18E: Beldum
+    0x18F: Metang
+    0x190: Metagross
+    0x191: Regirock
+    0x192: Regice
+    0x193: Registeel
+    0x194: Kyogre
+    0x195: Groudon
+    0x196: Rayquaza
+    0x197: Latias
+    0x198: Latios
+    0x199: Jirachi
+    0x19A: Deoxys
+    0x19B: Chimecho
+    0x19C: Pokemon Egg
+    0x19D: Unown
+    0x19E: Unown
