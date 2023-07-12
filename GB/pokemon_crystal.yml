@@ -189,64 +189,64 @@ properties:
       - { type: "reference", address: 0xD8D5, reference: "items" }
       - { type: "reference", address: 0xD8D6, reference: "items" }
     tms:
-      tm01-dynamicpunch: { type: "int", address: 0xD859 }
-      tm02-headbutt:     { type: "int", address: 0xD85A }
-      tm03-curse:        { type: "int", address: 0xD85B }
-      tm04-rollout:      { type: "int", address: 0xD85C }
-      tm05-roar:         { type: "int", address: 0xD85D }
-      tm06-toxic:        { type: "int", address: 0xD85E }
-      tm07-zapcannon:    { type: "int", address: 0xD85F }
-      tm08-rocksmash:    { type: "int", address: 0xD860 }
-      tm09-psychup:      { type: "int", address: 0xD861 }
-      tm10-hiddenpower:  { type: "int", address: 0xD862 }
-      tm11-sunnyday:     { type: "int", address: 0xD863 }
-      tm12-sweetscent:   { type: "int", address: 0xD864 }
-      tm13-snore:        { type: "int", address: 0xD865 }
-      tm14-blizzard:     { type: "int", address: 0xD866 }
-      tm15-hyperbeam:    { type: "int", address: 0xD867 }
-      tm16-icywind:      { type: "int", address: 0xD868 }
-      tm17-protect:      { type: "int", address: 0xD869 }
-      tm18-raindance:    { type: "int", address: 0xD86A }
-      tm19-gigadrain:    { type: "int", address: 0xD86B }
-      tm20-endure:       { type: "int", address: 0xD86C }
-      tm21-frustration:  { type: "int", address: 0xD86D }
-      tm22-solarbeam:    { type: "int", address: 0xD86E }
-      tm23-irontail:     { type: "int", address: 0xD86F }
-      tm24-dragonbreath: { type: "int", address: 0xD870 }
-      tm25-thunder:      { type: "int", address: 0xD871 }
-      tm26-earthquake:   { type: "int", address: 0xD872 }
-      tm27-return:       { type: "int", address: 0xD873 }
-      tm28-dig:          { type: "int", address: 0xD874 }
-      tm29-psychic:      { type: "int", address: 0xD875 }
-      tm30-shadowball:   { type: "int", address: 0xD876 }
-      tm31-mudslap:      { type: "int", address: 0xD877 }
-      tm32-doubleteam:   { type: "int", address: 0xD878 }
-      tm33-icepunch:     { type: "int", address: 0xD879 }
-      tm34-swagger:      { type: "int", address: 0xD87A }
-      tm35-sleeptalk:    { type: "int", address: 0xD87B }
-      tm36-sludgebomb:   { type: "int", address: 0xD87C }
-      tm37-sandstorm:    { type: "int", address: 0xD87D }
-      tm38-fireblast:    { type: "int", address: 0xD87E }
-      tm39-swift:        { type: "int", address: 0xD87F }
-      tm40-defensecurl:  { type: "int", address: 0xD880 }
-      tm41-ThunderPunch: { type: "int", address: 0xD881 }
-      tm42-dreameater:   { type: "int", address: 0xD882 }
-      tm43-detect:       { type: "int", address: 0xD883 }
-      tm44-rest:         { type: "int", address: 0xD884 }
-      tm45-attract:      { type: "int", address: 0xD885 }
-      tm46-thief:        { type: "int", address: 0xD886 }
-      tm47-steelwing:    { type: "int", address: 0xD887 }
-      tm48-firepunch:    { type: "int", address: 0xD888 }
-      tm49-furycutter:   { type: "int", address: 0xD889 }
-      tm50-nightmare:    { type: "int", address: 0xD88A }
+      TM01-DynamicPunch: { type: "int", address: 0xD859 }
+      TM02-Headbutt:     { type: "int", address: 0xD85A }
+      TM03-Curse:        { type: "int", address: 0xD85B }
+      TM04-Rollout:      { type: "int", address: 0xD85C }
+      TM05-Roar:         { type: "int", address: 0xD85D }
+      TM06-Toxic:        { type: "int", address: 0xD85E }
+      TM07-ZapCannon:    { type: "int", address: 0xD85F }
+      TM08-RockSmash:    { type: "int", address: 0xD860 }
+      TM09-PsychUp:      { type: "int", address: 0xD861 }
+      TM10-HiddenPower:  { type: "int", address: 0xD862 }
+      TM11-SunnyDay:     { type: "int", address: 0xD863 }
+      TM12-SweetScent:   { type: "int", address: 0xD864 }
+      TM13-Snore:        { type: "int", address: 0xD865 }
+      TM14-Blizzard:     { type: "int", address: 0xD866 }
+      TM15-HyperBeam:    { type: "int", address: 0xD867 }
+      TM16-IcyWind:      { type: "int", address: 0xD868 }
+      TM17-Protect:      { type: "int", address: 0xD869 }
+      TM18-RainDance:    { type: "int", address: 0xD86A }
+      TM19-GigaDrain:    { type: "int", address: 0xD86B }
+      TM20-Endure:       { type: "int", address: 0xD86C }
+      TM21-Frustration:  { type: "int", address: 0xD86D }
+      TM22-SolarBeam:    { type: "int", address: 0xD86E }
+      TM23-Irontail:     { type: "int", address: 0xD86F }
+      TM24-Dragonbreath: { type: "int", address: 0xD870 }
+      TM25-Thunder:      { type: "int", address: 0xD871 }
+      TM26-Earthquake:   { type: "int", address: 0xD872 }
+      TM27-Return:       { type: "int", address: 0xD873 }
+      TM28-Dig:          { type: "int", address: 0xD874 }
+      TM29-Psychic:      { type: "int", address: 0xD875 }
+      TM30-ShadowBall:   { type: "int", address: 0xD876 }
+      TM31-MudSlap:      { type: "int", address: 0xD877 }
+      TM32-DoubleTeam:   { type: "int", address: 0xD878 }
+      TM33-IcePunch:     { type: "int", address: 0xD879 }
+      TM34-Swagger:      { type: "int", address: 0xD87A }
+      TM35-SleepTalk:    { type: "int", address: 0xD87B }
+      TM36-SludgeBomb:   { type: "int", address: 0xD87C }
+      TM37-Sandstorm:    { type: "int", address: 0xD87D }
+      TM38-FireBlast:    { type: "int", address: 0xD87E }
+      TM39-Swift:        { type: "int", address: 0xD87F }
+      TM40-DefenseCurl:  { type: "int", address: 0xD880 }
+      TM41-ThunderPunch: { type: "int", address: 0xD881 }
+      TM42-DreamEater:   { type: "int", address: 0xD882 }
+      TM43-Detect:       { type: "int", address: 0xD883 }
+      TM44-Rest:         { type: "int", address: 0xD884 }
+      TM45-Attract:      { type: "int", address: 0xD885 }
+      TM46-Thief:        { type: "int", address: 0xD886 }
+      TM47-SteelWing:    { type: "int", address: 0xD887 }
+      TM48-FirePunch:    { type: "int", address: 0xD888 }
+      TM49-FuryCutter:   { type: "int", address: 0xD889 }
+      TM50-Nightmare:    { type: "int", address: 0xD88A }
     hms:
-      hm01: { type: "bit", address: 0xD88B, position: 1 }
-      hm02: { type: "bit", address: 0xD88C, position: 1 }
-      hm03: { type: "bit", address: 0xD88D, position: 1 }
-      hm04: { type: "bit", address: 0xD88E, position: 1 }
-      hm05: { type: "bit", address: 0xD88F, position: 1 }
-      hm06: { type: "bit", address: 0xD890, position: 1 }
-      hm07: { type: "bit", address: 0xD891, position: 1 }
+      HM01-Cut: { type: "bit", address: 0xD88B, position: 1 }
+      HM02-Fly: { type: "bit", address: 0xD88C, position: 1 }
+      HM03-Surf: { type: "bit", address: 0xD88D, position: 1 }
+      HM04-Strength: { type: "bit", address: 0xD88E, position: 1 }
+      HM05-Flash: { type: "bit", address: 0xD88F, position: 1 }
+      HM06-Whirlpool: { type: "bit", address: 0xD890, position: 1 }
+      HM07-Waterfall: { type: "bit", address: 0xD891, position: 1 }
     badges:
       badge1: { type: "bit", address: 0xd857, position: 0, description: "zephyrBadge" }
       badge2: { type: "bit", address: 0xd857, position: 1, description: "hiveBadge" }
@@ -1333,65 +1333,65 @@ glossary:
     0xBC: "MUSIC MAIL" 
     0xBD: "MIRAGE MAIL" 
     0xBE: "TERU-SAMA" 
-    0xBF: "TM01 DYNAMICPUNCH"
-    0xC0: "TM02 HEADBUTT"
-    0xC1: "TM03 CURSE"
-    0xC2: "TM04 ROLLOUT"
+    0xBF: "TM01-DynamicPunch"
+    0xC0: "TM02-Headbutt"
+    0xC1: "TM03-Curse"
+    0xC2: "TM04-Rollout"
     0xC3: "BERRY"
-    0xC4: "TM05 ROAR"
-    0xC5: "TM06 TOXIC"
-    0xC6: "TM07 ZAP CANNON"
-    0xC7: "TM08 ROCK SMASH"
-    0xC8: "TM09 PSYCH UP"
-    0xC9: "TM10 HIDDEN POWER"
-    0xCA: "TM11 SUNNY DAY"
-    0xCB: "TM12 SWEET SCENT"
-    0xCC: "TM13 SNORE"
-    0xCD: "TM14 BLIZZARD"
-    0xCE: "TM15 HYPER BEAM"
-    0xCF: "TM16 ICY WIND"
-    0xD0: "TM17 PROTECT"
-    0xD1: "TM18 RAIN DANCE"
-    0xD2: "TM19 GIGA DRAIN"
-    0xD3: "TM20 ENDURE"
-    0xD4: "TM21 FRUSTRATION"
-    0xD5: "TM22 SOLARBEAM"
-    0xD6: "TM23 IRON TAIL"
-    0xD7: "TM24 DRAGONBREATH"
-    0xD8: "TM25 THUNDER"
-    0xD9: "TM26 EARTHQUAKE"
-    0xDA: "TM27 RETURN"
-    0xDB: "TM28 DIG"
+    0xC4: "TM05-Roar"
+    0xC5: "TM06-Toxic"
+    0xC6: "TM07-ZapCannon"
+    0xC7: "TM08-RockSmash"
+    0xC8: "TM09-PsychUp"
+    0xC9: "TM10-HiddenPower"
+    0xCA: "TM11-SunnyDay"
+    0xCB: "TM12-SweetScent"
+    0xCC: "TM13-Snore"
+    0xCD: "TM14-Blizzard"
+    0xCE: "TM15-HyperBeam"
+    0xCF: "TM16-IcyWind"
+    0xD0: "TM17-Protect"
+    0xD1: "TM18-RainDance"
+    0xD2: "TM19-GigaDrain"
+    0xD3: "TM20-Endure"
+    0xD4: "TM21-Frustration"
+    0xD5: "TM22-SolarBeam"
+    0xD6: "TM23-IronTail"
+    0xD7: "TM24-DragonBreath"
+    0xD8: "TM25-Thunder"
+    0xD9: "TM26-Earthquake"
+    0xDA: "TM27-Return"
+    0xDB: "TM28-Dig"
     0xDC: "BERRY"
-    0xDD: "TM29 PSYCHIC"
-    0xDE: "TM30 SHADOW BALL"
-    0xDF: "TM31 MUD SLAP"
-    0xE0: "TM32 DOUBLE TEAM"
-    0xE1: "TM33 ICE PUNCH"
-    0xE2: "TM34 SWAGGER"
-    0xE3: "TM35 SLEEP TALK"
-    0xE4: "TM36 SLUDGE BOMB"
-    0xE5: "TM37 SANDSTORM"
-    0xE6: "TM38 FIRE BLAST"
-    0xE7: "TM39 SWIFT"
-    0xE8: "TM40 DEFENSE CURL"
-    0xE9: "TM41 THUNDERPUNCH"
-    0xEA: "TM42 DREAM EATER"
-    0xEB: "TM43 DETECT"
-    0xEC: "TM44 REST"
-    0xED: "TM45 ATTRACT"
-    0xEE: "TM46 THIEF"
-    0xEF: "TM47 STEEL WING"
-    0xF0: "TM48 FIRE PUNCH"
-    0xF1: "TM49 FURY CUTTER"
-    0xF2: "TM50 NIGHTMARE"
-    0xF3: "HM01 CUT"
-    0xF4: "HM02 FLY"
-    0xF5: "HM03 SURF"
-    0xF6: "HM04 STRENGTH"
-    0xF7: "HM05 FLASH"
-    0xF8: "HM06 WHIRLPOOL"
-    0xF9: "HM07 WATERFALL"
+    0xDD: "TM29-Psychic"
+    0xDE: "TM30-ShadowBall"
+    0xDF: "TM31-MudSlap"
+    0xE0: "TM32-DoubleTeam"
+    0xE1: "TM33-IcePunch"
+    0xE2: "TM34-Swagger"
+    0xE3: "TM35-SleepTalk"
+    0xE4: "TM36-SludgeBomb"
+    0xE5: "TM37-Sandstomr"
+    0xE6: "TM38-FireBlast"
+    0xE7: "TM39-Swift"
+    0xE8: "TM40-DefenseCurl"
+    0xE9: "TM41-ThunderPunch"
+    0xEA: "TM42-DreamEater"
+    0xEB: "TM43-Detect"
+    0xEC: "TM44-Rest"
+    0xED: "TM45-Attract"
+    0xEE: "TM46-Thief"
+    0xEF: "TM47-SteelWing"
+    0xF0: "TM48-FirePunch"
+    0xF1: "TM49-FuryCutter"
+    0xF2: "TM50-Nightmare"
+    0xF3: "HM01-Cut"
+    0xF4: "HM02-Fly"
+    0xF5: "HM03-Surf"
+    0xF6: "HM04-Strength"
+    0xF7: "HM05-Flash"
+    0xF8: "HM06-Whirlpool"
+    0xF9: "HM07-Waterfall"
     0xFA: "BERRY"
     0xFB: "HM09"
     0xFC: "HM10"
