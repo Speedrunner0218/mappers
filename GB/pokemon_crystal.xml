@@ -1465,6 +1465,74 @@
             <entry key="0xBC" value="Music Mail" />
             <entry key="0xBD" value="Mirage Mail" />
             <entry key="0xBE" value="Teru-Sama" />
+            <entry key="0xBF" value="tm01-dynamicpunch" />
+            <entry key="0xC0" value="tm02-headbutt" />
+            <entry key="0xC1" value="tm03-curse" />
+            <entry key="0xC2" value="tm04-rollout" />
+            <entry key="0xC3" value="Berry" />
+            <entry key="0xC4" value="tm05-roar" />
+            <entry key="0xC5" value="tm06-toxic" />
+            <entry key="0xC6" value="tm07-zapcannon" />
+            <entry key="0xC7" value="tm08-rocksmash" />
+            <entry key="0xC8" value="tm09-psychup" />
+            <entry key="0xC9" value="tm10-hiddenpower" />
+            <entry key="0xCA" value="tm11-sunnyday" />
+            <entry key="0xCB" value="tm12-sweetscent" />
+            <entry key="0xCC" value="tm13-snore" />
+            <entry key="0xCD" value="tm14-blizzard" />
+            <entry key="0xCE" value="tm15-hyperbeam" />
+            <entry key="0xCF" value="tm16-icywind" />
+            <entry key="0xD0" value="tm17-protect" />
+            <entry key="0xD1" value="tm18-raindance" />
+            <entry key="0xD2" value="tm19-gigadrain" />
+            <entry key="0xD3" value="tm20-endure" />
+            <entry key="0xD4" value="tm21-frustration" />
+            <entry key="0xD5" value="tm22-solarbeam" />
+            <entry key="0xD6" value="tm23-irontail" />
+            <entry key="0xD7" value="tm24-dragonbreath" />
+            <entry key="0xD8" value="tm25-thunder" />
+            <entry key="0xD9" value="tm26-earthquake" />
+            <entry key="0xDA" value="tm27-return" />
+            <entry key="0xDB" value="tm28-dig" />
+            <entry key="0xDC" value="Berry" />
+            <entry key="0xDD" value="tm29-psychic" />
+            <entry key="0xDE" value="tm30-shadowball" />
+            <entry key="0xDF" value="tm31-mudslap" />
+            <entry key="0xE0" value="tm32doubleteam" />
+            <entry key="0xE1" value="tm33-icepunch" />
+            <entry key="0xE2" value="tm34-swagger" />
+            <entry key="0xE3" value="tm35-sleeptalk" />
+            <entry key="0xE4" value="tm36-sludgebomb" />
+            <entry key="0xE5" value="tm37-sandstorm" />
+            <entry key="0xE6" value="tm38-fireblast" />
+            <entry key="0xE7" value="tm39-swift" />
+            <entry key="0xE8" value="tm40-defensecurl" />
+            <entry key="0xE9" value="tm41-thunderpunch" />
+            <entry key="0xEA" value="tm42-dreameater" />
+            <entry key="0xEB" value="tm43-detect" />
+            <entry key="0xEC" value="tm44-rest" />
+            <entry key="0xED" value="tm45-attract" />
+            <entry key="0xEE" value="tm46-thief" />
+            <entry key="0xEF" value="tm47-steelwing" />
+            <entry key="0xF0" value="tm48-firepunch" />
+            <entry key="0xF1" value="tm49-furycutter" />
+            <entry key="0xF2" value="tm50-nightmare" />
+            <entry key="0xF3" value="hm01-cut" />
+            <entry key="0xF4" value="hm02-fly" />
+            <entry key="0xF5" value="hm03-surf" />
+            <entry key="0xF6" value="hm04-strength" />
+            <entry key="0xF7" value="hm05-flash" />
+            <entry key="0xF8" value="hm06-whirlpool" />
+            <entry key="0xF9" value="hm07-waterfall" />
+            <entry key="0xFA" value="Berry" />
+            <entry key="0xFB" value="hm09" />
+            <entry key="0xFC" value="hm10" />
+            <entry key="0xFD" value="hm11" />
+            <entry key="0xFE" value="hm12" />
+            <entry key="0xFF" value="Berry" />
+            
+
+            
         </items>
         <pokemonSpecies>
             <entry key="0x00" />
