@@ -37,10 +37,10 @@
                 <class name="3" type="pokemonPartyMoves" var:moveAddress="address + 11" />
             </moves>
             <ivs>
-                <property name="attack" address="address + 27" type="int" postprocessor="(x - (x % 16))/16" />
-                <property name="defense" address="address + 27" type="int" postprocessor="x % 16" />
-                <property name="speed" address="address + 28" type="int" postprocessor="(x - (x % 16))/16" />
-                <property name="special" address="address + 28" type="int" postprocessor="x % 16" />
+                <property name="attack"  type="nibble" address="address + 27" position="0" />
+                <property name="defense" type="nibble" address="address + 27" position="1" />
+                <property name="speed"   type="nibble" address="address + 28" position="0" />
+                <property name="special" type="nibble" address="address + 28" position="1" />
             </ivs>
             <evs>
                 <property name="hp" address="address + 17" type="int" length="2" description="HP EV (stat experience)" />
@@ -78,10 +78,10 @@
                 <class name="3" type="pokemonPartyMoves" var:moveAddress="address + 5" />
             </moves>
             <dvs>
-                <property name="attack" address="address + 27" type="int" postprocessor="(x - (x % 16))/16" />
-                <property name="defense" address="address + 27" type="int" postprocessor="x % 16" />
-                <property name="speed" address="address + 28" type="int" postprocessor="(x - (x % 16))/16" />
-                <property name="special" address="address + 28" type="int" postprocessor="x % 16" />
+                <property name="attack" address="address + 27" type="int" postprocessor-reader="(x - (x % 16))/16" />
+                <property name="defense" address="address + 27" type="int" postprocessor-reader="x % 16" />
+                <property name="speed" address="address + 28" type="int" postprocessor-reader="(x - (x % 16))/16" />
+                <property name="special" address="address + 28" type="int" postprocessor-reader="x % 16" />
             </dvs>
             <evs>
                 <property name="hp" address="address + 17" type="int" length="2" description="HP EV (stat experience)" />
@@ -337,7 +337,7 @@
                     <property name="effect"   type="int" address="0xCFD2" />
                     <property name="power"    type="int" address="0xCFD3" />
                     <property name="type"     type="int" address="0xCFD4" reference="pokemonTypes" />
-                    <property name="accuracy" type="int" address="0xCFD5" postprocessor="Round(((x / 255) * 100), 2)" />
+                    <property name="accuracy" type="int" address="0xCFD5" postprocessor-reader="Round(((x / 255) * 100), 2)" />
                     <property name="maxPP"    type="int" address="0xCFD6" />
                 </lastUsedMove>
             </playerPokemon>
@@ -372,18 +372,18 @@
                     <class name="3" type="pokemonEnemyBattleMoves" var:moveAddress="0xCFEF" />
                 </moves>
                 <dvs>
-                    <property name="attack"  type="int" address="0xCFF0" postprocessor="(x - (x % 16))/16" />
-                    <property name="defense" type="int" address="0xCFF0" postprocessor="x % 16" />
-                    <property name="speed"   type="int" address="0xCFF1" postprocessor="(x - (x % 16))/16" />
-                    <property name="special" type="int" address="0xCFF1" postprocessor="x % 16" />
+                    <property name="attack"  type="int" address="0xCFF0" postprocessor-reader="(x - (x % 16))/16" />
+                    <property name="defense" type="int" address="0xCFF0" postprocessor-reader="x % 16" />
+                    <property name="speed"   type="int" address="0xCFF1" postprocessor-reader="(x - (x % 16))/16" />
+                    <property name="special" type="int" address="0xCFF1" postprocessor-reader="x % 16" />
                 </dvs>
                 <baseStats>
-                    <property name="hp"      type="int" address="0xD001" postprocessor="x % 16" />
-                    <property name="attack"  type="int" address="0xD002" postprocessor="x % 16" />
-                    <property name="defense" type="int" address="0xD003" postprocessor="x % 16" />
-                    <property name="speed"   type="int" address="0xD004" postprocessor="x % 16" />
-                    <property name="special" type="int" address="0xD005" postprocessor="x % 16" />
-                    <property name="exp"     type="int" address="0xD007" postprocessor="x % 16" />
+                    <property name="hp"      type="int" address="0xD001" postprocessor-reader="x % 16" />
+                    <property name="attack"  type="int" address="0xD002" postprocessor-reader="x % 16" />
+                    <property name="defense" type="int" address="0xD003" postprocessor-reader="x % 16" />
+                    <property name="speed"   type="int" address="0xD004" postprocessor-reader="x % 16" />
+                    <property name="special" type="int" address="0xD005" postprocessor-reader="x % 16" />
+                    <property name="exp"     type="int" address="0xD007" postprocessor-reader="x % 16" />
                 </baseStats>
                 <effects>
                     <property name="bide"          type="bit" address="0xD066" position="0" />
@@ -417,7 +417,7 @@
                     <property name="effect"   type="int" address="0xCFCC" />
                     <property name="power"    type="int" address="0xCFCD" />
                     <property name="type"     type="int" address="0xCFCE" reference="pokemonTypes" />
-                    <property name="accuracy" type="int" address="0xCFCF" postprocessor="Round(((x / 255) * 100), 2)" />
+                    <property name="accuracy" type="int" address="0xCFCF" postprocessor-reader="Round(((x / 255) * 100), 2)" />
                     <property name="maxPP"    type="int" address="0xCFD0" />
                 </lastUsedMove>
             </enemyPokemon>

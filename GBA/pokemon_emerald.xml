@@ -22,7 +22,7 @@
             <property name="level"            address="address+84" type="int" />
             <property name="itemHeld"         address="address"    type="int" preprocessor="data_block_a245dcac(0, 2)" length="2" reference="items" />
             <property name="expPoints"        address="address"    type="uint" preprocessor="data_block_a245dcac(0, 4)" length="4" />
-            <property name="nature"           address="address"    type="uint" length="4" postprocessor="x % 25" />
+            <property name="nature"           address="address"    type="uint" length="4" postprocessor-reader="x % 25" />
             <property name="friendship"       address="address"    type="int" preprocessor="data_block_a245dcac(0, 9)" />
             <property name="statusCondition"  address="address+80" type="int" reference="statusConditions" />
             <property name="ability"          address="address"    type="bit" preprocessor="data_block_a245dcac(3, 4)" length="4" position="31" />
@@ -45,12 +45,12 @@
             </moves> -->
             <ivs>
                 <!-- <property name="ivEggAbilityBlock" address="address" preprocessor="data_block_a245dcac(3, 4)" type="uint" length="4" /> -->
-                <property name="hp"              address="address" preprocessor="data_block_a245dcac(3, 4)" type="int" length="4" postprocessor="BitRange(x, 4, 0)" />
-                <property name="attack"          address="address" preprocessor="data_block_a245dcac(3, 4)" type="int" length="4" postprocessor="BitRange(x, 9, 5)" />
-                <property name="defense"         address="address" preprocessor="data_block_a245dcac(3, 4)" type="int" length="4" postprocessor="BitRange(x, 14, 10)" />
-                <property name="speed"           address="address" preprocessor="data_block_a245dcac(3, 4)" type="int" length="4" postprocessor="BitRange(x, 19, 15)" />
-                <property name="specialAttack"   address="address" preprocessor="data_block_a245dcac(3, 4)" type="int" length="4" postprocessor="BitRange(x, 24, 20)" />
-                <property name="specialDefense"  address="address" preprocessor="data_block_a245dcac(3, 4)" type="int" length="4" postprocessor="BitRange(x, 29, 25)" />
+                <property name="hp"              address="address" preprocessor="data_block_a245dcac(3, 4)" type="int" length="4" postprocessor-reader="BitRange(x, 4, 0)" />
+                <property name="attack"          address="address" preprocessor="data_block_a245dcac(3, 4)" type="int" length="4" postprocessor-reader="BitRange(x, 9, 5)" />
+                <property name="defense"         address="address" preprocessor="data_block_a245dcac(3, 4)" type="int" length="4" postprocessor-reader="BitRange(x, 14, 10)" />
+                <property name="speed"           address="address" preprocessor="data_block_a245dcac(3, 4)" type="int" length="4" postprocessor-reader="BitRange(x, 19, 15)" />
+                <property name="specialAttack"   address="address" preprocessor="data_block_a245dcac(3, 4)" type="int" length="4" postprocessor-reader="BitRange(x, 24, 20)" />
+                <property name="specialDefense"  address="address" preprocessor="data_block_a245dcac(3, 4)" type="int" length="4" postprocessor-reader="BitRange(x, 29, 25)" />
             </ivs>
             <evs>
                 <property name="hp"             address="address" preprocessor="data_block_a245dcac(2, 0)" type="int" />
@@ -80,20 +80,20 @@
         <battleStructure>
             <property name="partyPos" type="int" address="partyPosition" length="2" />
             <macro type="pokemon" />
-            <property name="nickname"         address="48" type="string" length="11" characterMap="defaultCharacterMap" />
-            <property name="speciesArray"     address="0"  type="int" length="2" reference="pokemonSpecies" />
-            <property name="level"            address="42" type="int" />
-            <property name="expPoints"        address="68" type="uint" length="4"/>
-            <property name="friendship"       address="43" type="int" />
-            <property name="personalityValue" address="72" type="uint" length="4"/>
-            <property name="ability"          address="32" type="int" reference="abilities" />
-            <property name="heldItem"         address="46" type="int" length="2" reference="items" />
-            <property name="focusEnergy"      address="82" type="bit" position="4" />
-            <property name="type1"            address="33" type="int" reference="pokemonTypes" />
-            <property name="type2"            address="34" type="int" reference="pokemonTypes" />
-            <property name="status1"          address="76" type="int"  reference="statusConditions" />
-            <property name="status2"          address="76" type="int"  reference="statusConditions" />
-            <property name="otName"           address="60" type="string" length="8" characterMap="defaultCharacterMap" />
+            <property name="nickname"         address="address+48" type="string" length="11" characterMap="defaultCharacterMap" />
+            <property name="speciesArray"     address="address+0"  type="int" length="2" reference="pokemonSpecies" />
+            <property name="level"            address="address+42" type="int" />
+            <property name="expPoints"        address="address+68" type="uint" length="4"/>
+            <property name="friendship"       address="address+43" type="int" />
+            <property name="personalityValue" address="address+72" type="uint" length="4"/>
+            <property name="ability"          address="address+32" type="int" reference="abilities" />
+            <property name="heldItem"         address="address+46" type="int" length="2" reference="items" />
+            <property name="focusEnergy"      address="address+82" type="bit" position="4" />
+            <property name="type1"            address="address+33" type="int" reference="pokemonTypes" />
+            <property name="type2"            address="address+34" type="int" reference="pokemonTypes" />
+            <property name="status1"          address="address+76" type="int"  reference="statusConditions" />
+            <property name="status2"          address="address+76" type="int"  reference="statusConditions" />
+            <property name="otName"           address="address+60" type="string" length="8" characterMap="defaultCharacterMap" />
             <stats>
                 <property name="hp"             address="address+44" type="int" length="2" />
                 <property name="maxHp"          address="address+40" type="int" length="2" />
@@ -105,12 +105,12 @@
             </stats>
             <ivs>
                 <!-- <property name="ivEggAbilityBlock" address="address+20" type="uint" length="4" /> -->
-                <property name="hp"              address="address+20" type="int" length="4" postprocessor="BitRange(x, 4, 0)" />
-                <property name="attack"          address="address+20" type="int" length="4" postprocessor="BitRange(x, 9, 5)" />
-                <property name="defense"         address="address+20" type="int" length="4" postprocessor="BitRange(x, 14, 10)" />
-                <property name="speed"           address="address+20" type="int" length="4" postprocessor="BitRange(x, 19, 15)" />
-                <property name="specialAttack"   address="address+20" type="int" length="4" postprocessor="BitRange(x, 24, 20)" />
-                <property name="specialDefense"  address="address+20" type="int" length="4" postprocessor="BitRange(x, 29, 25)" />
+                <property name="hp"              address="address+20" type="int" length="4" postprocessor-reader="BitRange(x, 4, 0)" />
+                <property name="attack"          address="address+20" type="int" length="4" postprocessor-reader="BitRange(x, 9, 5)" />
+                <property name="defense"         address="address+20" type="int" length="4" postprocessor-reader="BitRange(x, 14, 10)" />
+                <property name="speed"           address="address+20" type="int" length="4" postprocessor-reader="BitRange(x, 19, 15)" />
+                <property name="specialAttack"   address="address+20" type="int" length="4" postprocessor-reader="BitRange(x, 24, 20)" />
+                <property name="specialDefense"  address="address+20" type="int" length="4" postprocessor-reader="BitRange(x, 29, 25)" />
             </ivs>
             <!-- <moves>
                 move1: { offset: 12, type: "int", size: 2, reference: "moves" }
@@ -140,7 +140,7 @@
         <!-- <pokemonPartyMoves>
             <class name="move" type="pokemonPartyMoves" preprocessor="data_block_a245dcac(1, moveOffset)" length="2" reference="moves" />
             <class name="pp"   type="pokemonPartyMoves" preprocessor="data_block_a245dcac(1, ppOffset + 8)" />
-            <class name="ppUp" type="pokemonPartyMoves" preprocessor="data_block_a245dcac(0, ppOffset + 8)" postprocessor="BitRange(x, 1, 0)" />
+            <class name="ppUp" type="pokemonPartyMoves" preprocessor="data_block_a245dcac(0, ppOffset + 8)" postprocessor-reader="BitRange(x, 1, 0)" />
         </pokemonPartyMoves> -->
         <playerItem>
             <property name="item"     type="int" length="2" preprocessor="dma_967d10cc(0x03005D8C, offset)" reference="items" />
@@ -828,12 +828,12 @@
 
 
         <options> 
-            <property name="textSpeed"   type="int" preprocessor="dma_967d10cc(0x03005D90, 20), 2, 0)" postprocessor="BitRange(x, 2, 0)" />
+            <property name="textSpeed"   type="int" preprocessor="dma_967d10cc(0x03005D90, 20), 2, 0)" postprocessor-reader="BitRange(x, 2, 0)" />
             <property name="battleAnim"  type="bit" preprocessor="dma_967d10cc(0x03005D90, 21)" position="2" />
             <property name="battleStyle" type="bit" preprocessor="dma_967d10cc(0x03005D90, 21)" position="1" />
             <property name="sound"       type="bit" preprocessor="dma_967d10cc(0x03005D90, 21)" position="0" />
             <property name="buttonMode"  type="int" preprocessor="dma_967d10cc(0x03005D90, 19)" />
-            <property name="windowFrame" type="int" preprocessor="dma_967d10cc(0x03005D90, 20), 7, 3)" postprocessor="BitRange(x, 2, 0)" />
+            <property name="windowFrame" type="int" preprocessor="dma_967d10cc(0x03005D90, 20), 7, 3)" postprocessor-reader="BitRange(x, 2, 0)" />
         </options> 
 
         <gameTime>

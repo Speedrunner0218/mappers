@@ -1,0 +1,2002 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mapper id="161a9132-9f4d-4679-9cc1-11f794253cf1" name="Pokemon Gold / Silver" platform="GB"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://schemas.gamehook.io/mapper https://schemas.gamehook.io/mapper.xsd"
+    xmlns:var="https://schemas.gamehook.io/attributes/var">
+    <macros>
+        <pokemon>
+            <property name="species" address="address" type="int" reference="pokemonSpecies" />
+            <property name="pokedexNumber" address="address" type="int" reference="pokemonPokedexNumbers" />
+        </pokemon>
+    </macros>
+
+    <classes>
+        <pokemonInParty>
+            <macro type="pokemon" />
+            <property name="nickname"         type="string" address="nicknameAddress" length="11" />
+            <property name="level"            type="int" address="address + 31" />
+            <property name="experiencePoints" type="int" address="address + 8" />
+            <property name="friendshipPoints" type="int" address="address + 27" />
+            <property name="statusCondition"  type="int" address="address + 32" reference="statusConditions" />
+            <property name="heldItem"         type="int" address="address + 1" reference="items" />
+            <property name="pokerus"          type="int" address="address + 28" />
+            <property name="trainerId"        type="int" address="address + 6" length="2" />
+            <stats>
+                <property name="hp"             type="int" address="address + 34" length="2" />
+                <property name="maxHp"          type="int" address="address + 36" length="2" />
+                <property name="attack"         type="int" address="address + 38" length="2" />
+                <property name="defense"        type="int" address="address + 40" length="2" />
+                <property name="specialAttack"  type="int" address="address + 44" length="2" />
+                <property name="specialDefense" type="int" address="address + 46" length="2" />
+                <property name="speed"          type="int" address="address + 42" length="2" />
+            </stats>
+            <moves>
+                <class name="0" type="pokemonInPartyMoveset" var:moveAddress="address + 2" />
+                <class name="1" type="pokemonInPartyMoveset" var:moveAddress="address + 3" />
+                <class name="2" type="pokemonInPartyMoveset" var:moveAddress="address + 4" />
+                <class name="3" type="pokemonInPartyMoveset" var:moveAddress="address + 5" />
+            </moves>
+            <ivs>
+                <property name="attack"  type="nibble" address="address + 21" position="0" />
+                <property name="defense" type="nibble" address="address + 21" position="1" />
+                <property name="speed"   type="nibble" address="address + 22" position="0" />
+                <property name="special" type="nibble" address="address + 22" position="1" />
+            </ivs>
+            <evs>
+                <property name="hp"      type="int" address="address + 11" length="2" />
+                <property name="attack"  type="int" address="address + 13" length="2" />
+                <property name="defense" type="int" address="address + 15" length="2" />
+                <property name="speed"   type="int" address="address + 17" length="2" />
+                <property name="special" type="int" address="address + 19" length="2" />
+            </evs>
+
+            <script type="text/typescript">
+                <![CDATA[
+                    get hpPercentage() {
+                        return this.hp.value / this.maxHp.value * 100
+                    }
+                ]]>
+            </script>
+        </pokemonInParty>
+
+        <pokemonInPartyMoveset>
+            <property name="type" type="int" address="moveAddress" reference="moves" />
+            <property name="pp" type="int" address="moveAddress + 21" postprocessor-reader="x % 64" />
+            <property name="ppUp" type="int" address="moveAddress + 21" postprocessor-reader="Floor(x / 64)" />
+        </pokemonInPartyMoveset>
+
+        <pokemonBattleMoves>
+            <property name="type" type="int" address="moveAddress" reference="moves" />
+            <property name="pp" type="int" address="moveAddress + 6" postprocessor-reader="x % 64" />
+            <property name="ppUp" type="int" address="moveAddress + 6" postprocessor-reader="Floor(x / 64)" />
+        </pokemonBattleMoves>
+
+        <playerItem>
+            <property name="item" address="address" type="int" reference="items" />
+            <property name="quantity" address="address + 1" type="int" />
+        </playerItem>
+
+        <roamer>
+            <macro type="pokemon" />
+            <property name="level"     address="address+1" type="int" length="1" />
+            <property name="mapGroup"  address="address+2" type="int" length="1" reference="mapGroups" />
+            <property name="mapNumber" address="address+3" type="int" length="1" />
+            <property name="hp"        address="address+4" type="int" length="1" />
+            <!-- <dvs>
+                <property name="attack"  address="address+5" type="int" postprocessor-reader="(x - (x % 16))/16" />
+                <property name="defense" address="address+5" type="int" postprocessor-reader="x % 16" />
+                <property name="speed"   address="address+6" type="int" postprocessor-reader="(x - (x % 16))/16" />
+                <property name="special" address="address+6" type="int" postprocessor-reader="x % 16" />
+            </dvs> -->
+        </roamer>
+    </classes>
+
+    <properties>
+        <player>
+            <property name="name"      type="string" address="0xD1A3" length="11" />
+            <property name="gender"    type="int" address="0xD198" reference="gender" />
+            <property name="playerId"  type="int" address="0xD1A1" length="2" description="The active player ID" />
+            <property name="teamCount" type="int" address="0xDA22" />
+            <team>
+                <class name="0" type="pokemonInParty" var:address="0xDA2A" var:nicknameAddress="0xDB8C" />
+                <class name="1" type="pokemonInParty" var:address="0xDA5A" var:nicknameAddress="0xDB97" />
+                <class name="2" type="pokemonInParty" var:address="0xDA8A" var:nicknameAddress="0xDBA2" />
+                <class name="3" type="pokemonInParty" var:address="0xDABA" var:nicknameAddress="0xDBAD" />
+                <class name="4" type="pokemonInParty" var:address="0xDAEA" var:nicknameAddress="0xDBB8" />
+                <class name="5" type="pokemonInParty" var:address="0xDB1A" var:nicknameAddress="0xDBC3" />
+            </team>
+            
+            <badges>
+                <property name="badge1"  type="bit" address="0xD57C" position="0" description="zephyrBadge" />
+                <property name="badge2"  type="bit" address="0xD57C" position="1" description="hiveBadge" />
+                <property name="badge3"  type="bit" address="0xD57C" position="2" description="plainBadge" />
+                <property name="badge4"  type="bit" address="0xD57C" position="3" description="fogBadge" />
+                <property name="badge5"  type="bit" address="0xD57C" position="5" description="stormBadge" />
+                <property name="badge6"  type="bit" address="0xD57C" position="4" description="mineralBadge" />
+                <property name="badge7"  type="bit" address="0xD57C" position="6" description="glacierBadge" />
+                <property name="badge8"  type="bit" address="0xD57C" position="7" description="risingBadge" />
+                <property name="badge9"  type="bit" address="0xD57D" position="0" description="boulderBadge" />
+                <property name="badge10" type="bit" address="0xD57D" position="1" description="cascadeBadge" />
+                <property name="badge11" type="bit" address="0xD57D" position="2" description="thunderBadge" />
+                <property name="badge12" type="bit" address="0xD57D" position="3" description="rainbowBadge" />
+                <property name="badge13" type="bit" address="0xD57D" position="4" description="soulBadge" />
+                <property name="badge14" type="bit" address="0xD57D" position="5" description="marshBadge" />
+                <property name="badge15" type="bit" address="0xD57D" position="6" description="volcanoBadge" />
+                <property name="badge16" type="bit" address="0xD57D" position="7" description="earthBadge" />
+            </badges>
+
+            <pokegear>    
+                <property name="mapCard"       type="bit" address="0xD957" position="0" />
+                <property name="radioCard"     type="bit" address="0xD957" position="1" />
+                <property name="phoneCard"     type="bit" address="0xD957" position="2" />
+                <property name="expansionCard" type="bit" address="0xD957" position="3" />
+                <property name="obtained"      type="bit" address="0xD957" position="7" />
+            </pokegear>   
+
+            <script type="text/typescript">
+                <![CDATA[
+                    getTeam() {
+                        if (this.teamCount == 0) { return [] }
+                        return this.team[0..this.teamCount]
+                    }
+                ]]>
+            </script>
+        </player>
+
+        <bag>
+            <property name="money"     type="int" address="0xD573" length="3" />
+            <property name="moneyMom"  type="int" address="0xD576" length="3" />
+            <property name="coins"     type="int" address="0xD57A" length="2" />
+            <property name="itemCount" type="int" address="0xD5B7" />
+            <items>
+                <class name="0"  type="playerItem" var:address="0xD5B8" />
+                <class name="1"  type="playerItem" var:address="0xD5BA" />
+                <class name="2"  type="playerItem" var:address="0xD5BC" />
+                <class name="3"  type="playerItem" var:address="0xD5BE" />
+                <class name="4"  type="playerItem" var:address="0xD5C0" />
+                <class name="5"  type="playerItem" var:address="0xD5C2" />
+                <class name="6"  type="playerItem" var:address="0xD5C4" />
+                <class name="7"  type="playerItem" var:address="0xD5C6" />
+                <class name="8"  type="playerItem" var:address="0xD5C8" />
+                <class name="9"  type="playerItem" var:address="0xD5CA" />
+                <class name="10" type="playerItem" var:address="0xD5CC" />
+                <class name="11" type="playerItem" var:address="0xD5CE" />
+                <class name="12" type="playerItem" var:address="0xD5D0" />
+                <class name="13" type="playerItem" var:address="0xD5D2" />
+                <class name="14" type="playerItem" var:address="0xD5D4" />
+                <class name="15" type="playerItem" var:address="0xD5D6" />
+                <class name="16" type="playerItem" var:address="0xD5D8" />
+                <class name="17" type="playerItem" var:address="0xD5DA" />
+                <class name="18" type="playerItem" var:address="0xD5DC" />
+                <class name="19" type="playerItem" var:address="0xD5DE" />
+                <class name="20" type="playerItem" var:address="0xD5E0" />
+            </items>
+            <property name="pokeBallCount" type="int" address="0xD5FC" />
+            <balls>
+                <class name="0"  type="playerItem" var:address="0xd5fd" />
+                <class name="1"  type="playerItem" var:address="0xd5ff" />
+                <class name="2"  type="playerItem" var:address="0xD601" />
+                <class name="3"  type="playerItem" var:address="0xD603" />
+                <class name="4"  type="playerItem" var:address="0xD605" />
+                <class name="5"  type="playerItem" var:address="0xD607" />
+                <class name="6"  type="playerItem" var:address="0xD609" />
+                <class name="7"  type="playerItem" var:address="0xD60B" />
+                <class name="8"  type="playerItem" var:address="0xD60D" />
+                <class name="9"  type="playerItem" var:address="0xD60F" />
+                <class name="10" type="playerItem" var:address="0xD611" />
+                <class name="11" type="playerItem" var:address="0xD613" />
+            </balls>
+            <property name="totalKeyItems" type="int" address="0xD5E1" />
+            <keyItems>
+                <class name="0"  type="playerItem" var:address="0xD5E2" />
+                <class name="1"  type="playerItem" var:address="0xD5E3" />
+                <class name="2"  type="playerItem" var:address="0xD5E4" />
+                <class name="3"  type="playerItem" var:address="0xD5E5" />
+                <class name="4"  type="playerItem" var:address="0xD5E6" />
+                <class name="5"  type="playerItem" var:address="0xD5E7" />
+                <class name="6"  type="playerItem" var:address="0xD5E8" />
+                <class name="7"  type="playerItem" var:address="0xD5E9" />
+                <class name="8"  type="playerItem" var:address="0xD5EA" />
+                <class name="9"  type="playerItem" var:address="0xD5EB" />
+                <class name="10" type="playerItem" var:address="0xD5EC" />
+                <class name="11" type="playerItem" var:address="0xD5ED" />
+                <class name="12" type="playerItem" var:address="0xD5EE" />
+                <class name="13" type="playerItem" var:address="0xD5EF" />
+                <class name="14" type="playerItem" var:address="0xD5F0" />
+                <class name="15" type="playerItem" var:address="0xD5F1" />
+                <class name="16" type="playerItem" var:address="0xD5F2" />
+                <class name="17" type="playerItem" var:address="0xD5F3" />
+                <class name="18" type="playerItem" var:address="0xD5F4" />
+                <class name="19" type="playerItem" var:address="0xD5F5" />
+                <class name="20" type="playerItem" var:address="0xD5F6" />
+                <class name="21" type="playerItem" var:address="0xD5F7" />
+                <class name="22" type="playerItem" var:address="0xD5F8" />
+                <class name="23" type="playerItem" var:address="0xD5F9" />
+                <class name="24" type="playerItem" var:address="0xD5FA" />
+                <class name="25" type="playerItem" var:address="0xD5FB" />
+            </keyItems>
+            <tms>
+                <property name="tm01-dynamicpunch" type="int" address="0xD57E" />
+                <property name="tm02-headbutt"     type="int" address="0xD57F" />
+                <property name="tm03-curse"        type="int" address="0xD580" />
+                <property name="tm04-rollout"      type="int" address="0xD581" />
+                <property name="tm05-roar"         type="int" address="0xD582" />
+                <property name="tm06-toxic"        type="int" address="0xD583" />
+                <property name="tm07-zapcannon"    type="int" address="0xD584" />
+                <property name="tm08-rocksmash"    type="int" address="0xD585" />
+                <property name="tm09-psychup"      type="int" address="0xD586" />
+                <property name="tm10-hiddenpower"  type="int" address="0xD587" />
+                <property name="tm11-sunnyday"     type="int" address="0xD588" />
+                <property name="tm12-sweetscent"   type="int" address="0xD589" />
+                <property name="tm13-snore"        type="int" address="0xD58A" />
+                <property name="tm14-blizzard"     type="int" address="0xD58B" />
+                <property name="tm15-hyperbeam"    type="int" address="0xD58C" />
+                <property name="tm16-icywind"      type="int" address="0xD58D" />
+                <property name="tm17-protect"      type="int" address="0xD58E" />
+                <property name="tm18-raindance"    type="int" address="0xD58F" />
+                <property name="tm19-gigadrain"    type="int" address="0xD590" />
+                <property name="tm20-endure"       type="int" address="0xD591" />
+                <property name="tm21-frustration"  type="int" address="0xD592" />
+                <property name="tm22-solarbeam"    type="int" address="0xD593" />
+                <property name="tm23-irontail"     type="int" address="0xD594" />
+                <property name="tm24-dragonbreath" type="int" address="0xD595" />
+                <property name="tm25-thunder"      type="int" address="0xD596" />
+                <property name="tm26-earthquake"   type="int" address="0xD597" />
+                <property name="tm27-return"       type="int" address="0xD598" />
+                <property name="tm28-dig"          type="int" address="0xD599" />
+                <property name="tm29-psychic"      type="int" address="0xD59A" />
+                <property name="tm30-shadowball"   type="int" address="0xD59B" />
+                <property name="tm31-mudslap"      type="int" address="0xD59C" />
+                <property name="tm32-doubleteam"   type="int" address="0xD59D" />
+                <property name="tm33-icepunch"     type="int" address="0xD59E" />
+                <property name="tm34-swagger"      type="int" address="0xD59F" />
+                <property name="tm35-sleeptalk"    type="int" address="0xD5A0" />
+                <property name="tm36-sludgebomb"   type="int" address="0xD5A1" />
+                <property name="tm37-sandstorm"    type="int" address="0xD5A2" />
+                <property name="tm38-fireblast"    type="int" address="0xD5A3" />
+                <property name="tm39-swift"        type="int" address="0xD5A4" />
+                <property name="tm40-defensecurl"  type="int" address="0xD5A5" />
+                <property name="tm41-thunderpunch" type="int" address="0xD5A6" />
+                <property name="tm42-dreameater"   type="int" address="0xD5A7" />
+                <property name="tm43-detect"       type="int" address="0xD5A8" />
+                <property name="tm44-rest"         type="int" address="0xD5A9" />
+                <property name="tm45-attract"      type="int" address="0xD5AA" />
+                <property name="tm46-thief"        type="int" address="0xD5AB" />
+                <property name="tm47-steelwing"    type="int" address="0xD5AC" />
+                <property name="tm48-firepunch"    type="int" address="0xD5AD" />
+                <property name="tm49-furycutter"   type="int" address="0xD5AE" />
+                <property name="tm50-nightmare"    type="int" address="0xD5AF" />
+            </tms>
+            <hms>
+                <property name="hm01" type="bit" address="0xD5B0" position="1" />
+                <property name="hm02" type="bit" address="0xD5B1" position="1" />
+                <property name="hm03" type="bit" address="0xD5B2" position="1" />
+                <property name="hm04" type="bit" address="0xD5B3" position="1" />
+                <property name="hm05" type="bit" address="0xD5B4" position="1" />
+                <property name="hm06" type="bit" address="0xD5B5" position="1" />
+                <property name="hm07" type="bit" address="0xD5B6" position="1" />
+            </hms>
+        </bag>
+
+        <overworld>
+            <property name="mapGroup"  type="int" address="0xDA00" reference="mapGroups" />
+            <property name="mapNumber" type="int" address="0xDA01" />
+            <property name="y"         type="int" address="0xDA02" />
+            <property name="x"         type="int" address="0xDA03" />
+            <encounterRate>
+                <property name="morning" type="int" address="0xCDB5" />
+                <property name="day"     type="int" address="0xCDB6" />
+                <property name="night"   type="int" address="0xCDB7" />
+                <property name="water"   type="int" address="0xCDB8" />
+            </encounterRate>
+        </overworld>
+
+        <events>
+            <property name="beatChampion" type="bit" position="1" address="0xdb29" />
+        </events>
+
+        <battle>
+            <property name="mode"        type="int"    address="0xD116" reference="battleModes" />
+            <property name="type"        type="int"    address="0xD119" reference="battleTypes" />
+            <property name="result"      type="int"    address="0xCFE9" reference="battleResults" />
+            <property name="textBuffer"  type="string" address="0xD064" length="11" />
+            <property name="battleStart" type="int"    address="0xC664" />
+            <trainer>
+                <property name="name"  type="string" address="0xD118" length="11" />
+                <property name="class" type="int"    address="0xD22F" reference="trainerClasses" />
+                <property name="id"    type="int"    address="0xD231" />
+                <property name="totalPokemon" type="int" address="0xDD55" />
+                <team>
+                    <class name="0" type="pokemonInParty" var:address="0xDD5D" var:nicknameAddress="0xDEBF" />
+                    <class name="1" type="pokemonInParty" var:address="0xDD8D" var:nicknameAddress="0xDECA" />
+                    <class name="2" type="pokemonInParty" var:address="0xDDBD" var:nicknameAddress="0xDED5" />
+                    <class name="3" type="pokemonInParty" var:address="0xDDED" var:nicknameAddress="0xDEE0" />
+                    <class name="4" type="pokemonInParty" var:address="0xDE1D" var:nicknameAddress="0xDEEB" />
+                    <class name="5" type="pokemonInParty" var:address="0xDE4D" var:nicknameAddress="0xDEF6" />
+                </team>
+            </trainer>
+            <playerPokemon>
+                <property name="partyPos"      type="int" address="0xCFC6" />
+                <property name="heldItem"      type="int" address="0xCB2D" reference="items" />
+                <property name="species"       type="int" address="0xCB0C" reference="pokemonSpecies"  />
+                <property name="pokedexNumber" type="int" address="0xCB0C" reference="pokemonPokedexNumbers"  />
+                <property name="type1"         type="int" address="0xCB2A" reference="types"  />
+                <property name="type2"         type="int" address="0xCB2B" reference="types"  />
+                <property name="level"         type="int" address="0xCB19" />
+                <stats>
+                    <property name="hp"             type="int" address="0xCB1C" length="2" />
+                    <property name="maxHp"          type="int" address="0xCBBF" length="2" />
+                    <property name="attack"         type="int" address="0xCBC1" length="2" description="The Player's active Pokemon's Attack stat as calculated in battle (badge boosts and stat modifications included" />
+                    <property name="defense"        type="int" address="0xCBC3" length="2" description="The Player's active Pokemon's Defense stat as calculated in battle (badge boosts and stat modifications included" />
+                    <property name="specialAttack"  type="int" address="0xCBC7" length="2" description="The Player's active Pokemon's Special Attack stat as calculated in battle (badge boosts and stat modifications included" />
+                    <property name="specialDefense" type="int" address="0xCBC9" length="2" description="The Player's active Pokemon's Special Defense stat as calculated in battle (badge boosts and stat modifications included" />
+                    <property name="speed"          type="int" address="0xCBC5" length="2" description="The Player's active Pokemon's Speed stat as calculated in battle (badge boosts and stat modifications included" />
+                </stats>
+                <modifiers>
+                    <property name="attack"         type="int" address="0xCBAA" reference="stageModifiers" />
+                    <property name="defense"        type="int" address="0xCBAB" reference="stageModifiers" />
+                    <property name="speed"          type="int" address="0xCBAC" reference="stageModifiers" />
+                    <property name="specialAttack"  type="int" address="0xCBAD" reference="stageModifiers" />
+                    <property name="specialDefense" type="int" address="0xCBAE" reference="stageModifiers" />
+                    <property name="accuracy"       type="int" address="0xCBAF" reference="stageModifiers" />
+                    <property name="evasion"        type="int" address="0xCBB0" reference="stageModifiers" />
+                </modifiers>
+                <moves>
+                    <class name="0" type="pokemonBattleMoves" var:moveAddress="0xCB0E" />
+                    <class name="1" type="pokemonBattleMoves" var:moveAddress="0xCB0F" />
+                    <class name="2" type="pokemonBattleMoves" var:moveAddress="0xCB10" />
+                    <class name="3" type="pokemonBattleMoves" var:moveAddress="0xCB11" />
+                </moves>
+                <counters>
+                    <property name="rollout"    type="int" address="0xCB50" />
+                    <property name="confuse"    type="int" address="0xCB51" />
+                    <property name="toxic"      type="int" address="0xCB52" />
+                    <property name="disable"    type="int" address="0xCB53" />
+                    <property name="encore"     type="int" address="0xCB54" />
+                    <property name="perish"     type="int" address="0xCB55" />
+                    <property name="furyCutter" type="int" address="0xCB56" />
+                    <property name="protect"    type="int" address="0xCB57" />
+                </counters>
+                <status>
+                    <property name="nightmare"   type="bit" address="0xC668" position="0" />
+                    <property name="curse"       type="bit" address="0xC668" position="1" />
+                    <property name="protect"     type="bit" address="0xC668" position="2" />
+                    <property name="identified"  type="bit" address="0xC668" position="3" />
+                    <property name="perish"      type="bit" address="0xC668" position="4" />
+                    <property name="endure"      type="bit" address="0xC668" position="5" />
+                    <property name="rollout"     type="bit" address="0xC668" position="6" />
+                    <property name="in_love"     type="bit" address="0xC668" position="7" />
+                    <property name="curled"      type="bit" address="0xC669" position="0" />
+                    <property name="bide"        type="bit" address="0xC66A" position="0" />
+                    <property name="rampage"     type="bit" address="0xC66A" position="1" />
+                    <property name="in_loop"     type="bit" address="0xC66A" position="2" />
+                    <property name="flinched"    type="bit" address="0xC66A" position="3" />
+                    <property name="charged"     type="bit" address="0xC66A" position="4" />
+                    <property name="underground" type="bit" address="0xC66A" position="5" />
+                    <property name="flying"      type="bit" address="0xC66A" position="6" />
+                    <property name="confused"    type="bit" address="0xC66A" position="7" />
+                    <property name="x_accuracy"  type="bit" address="0xC66B" position="0" />
+                    <property name="mist"        type="bit" address="0xC66B" position="1" />
+                    <property name="focus_energ" type="bit" address="0xC66B" position="2" />
+                    <property name="substitute"  type="bit" address="0xC66B" position="4" />
+                    <property name="recharge"    type="bit" address="0xC66B" position="5" />
+                    <property name="rage"        type="bit" address="0xC66B" position="6" />
+                    <property name="leech_seed"  type="bit" address="0xC66B" position="7" />
+                    <property name="toxic"       type="bit" address="0xC66C" position="0" />
+                    <property name="transformed" type="bit" address="0xC66C" position="3" />
+                    <property name="encored"     type="bit" address="0xC66C" position="4" />
+                    <property name="lock_on"     type="bit" address="0xC66C" position="5" />
+                    <property name="destiny_bon" type="bit" address="0xC66C" position="6" />
+                    <property name="cant_run"    type="bit" address="0xC66C" position="7" />
+                </status>
+            </playerPokemon>
+            <enemyPokemon>
+                <property name="partyPos"       type="int" address="0xCB41" />
+                <property name="species"        type="int" address="0xD0EF" reference="pokemonSpecies" />
+                <property name="pokedexNumber"  type="int" address="0xD0EF" reference="pokemonPokedexNumbers" />
+                <property name="type1"          type="int" address="0xD127" reference="types" />
+                <property name="type2"          type="int" address="0xD128" reference="types" />
+                <property name="heldItem"       type="int" address="0xD0F0" reference="items" />
+                <property name="level"          type="int" address="0xD0FC" />
+                <property name="statsCondition" type="int" address="0xD0FD" reference="statusConditions" />
+                <!--<property name="gender"         type="int" address="0xD10F" reference="gender" />-->
+                <moves>
+                    <class name="0" type="pokemonBattleMoves" var:moveAddress="0xD0F1" />
+                    <class name="1" type="pokemonBattleMoves" var:moveAddress="0xD0F2" />
+                    <class name="2" type="pokemonBattleMoves" var:moveAddress="0xD0F3" />
+                    <class name="3" type="pokemonBattleMoves" var:moveAddress="0xD0F4" />
+                </moves>
+                <stats>
+                    <property name="hp"             type="int" address="0xD0FF" length="2" />
+                    <property name="maxHp"          type="int" address="0xD101" length="2" />
+                    <property name="attack"         type="int" address="0xD103" length="2" />
+                    <property name="defense"        type="int" address="0xD105" length="2" />
+                    <property name="specialAttack"  type="int" address="0xD109" length="2" />
+                    <property name="specialDefense" type="int" address="0xD10B" length="2" />
+                    <property name="speed"          type="int" address="0xD107" length="2" />
+                </stats>
+                <modifiers>
+                    <property name="attack"         type="int" address="0xCBB2" reference="stageModifiers" />
+                    <property name="defense"        type="int" address="0xCBB3" reference="stageModifiers" />
+                    <property name="speed"          type="int" address="0xCBB4" reference="stageModifiers" />
+                    <property name="specialAttack"  type="int" address="0xCBB5" reference="stageModifiers" />
+                    <property name="specialDefense" type="int" address="0xCBB6" reference="stageModifiers" />
+                    <property name="accuracy"       type="int" address="0xCBB7" reference="stageModifiers" />
+                    <property name="evasion"        type="int" address="0xCBB8" reference="stageModifiers" />
+                </modifiers>
+                <property name="enemyMonEnd" type="int" address="0xd116" />
+                <dvs>
+                    <property name="attack"  type="int" address="0xD0F5" postprocessor-reader="(x - (x % 16))/16" />
+                    <property name="defense" type="int" address="0xD0F5" postprocessor-reader="x % 16" />
+                    <property name="speed"   type="int" address="0xD0F6" postprocessor-reader="(x - (x % 16))/16" />
+                    <property name="special" type="int" address="0xD0F6" postprocessor-reader="x % 16" />
+                </dvs>
+                <counters>
+                    <property name="rollout"    type="int" address="0xCB58" />
+                    <property name="confuse"    type="int" address="0xCB59" />
+                    <property name="toxic"      type="int" address="0xCB5a" />
+                    <property name="disable"    type="int" address="0xCB5b" />
+                    <property name="encore"     type="int" address="0xCB5c" />
+                    <property name="perish"     type="int" address="0xCB5d" />
+                    <property name="furyCutter" type="int" address="0xCB5e" />
+                    <property name="protect"    type="int" address="0xCB5f" />
+                </counters>
+                <status>
+                    <property name="nightmare"   type="bit" address="0xC66D" position="0" />
+                    <property name="curse"       type="bit" address="0xC66D" position="1" />
+                    <property name="protect"     type="bit" address="0xC66D" position="2" />
+                    <property name="identified"  type="bit" address="0xC66D" position="3" />
+                    <property name="perish"      type="bit" address="0xC66D" position="4" />
+                    <property name="endure"      type="bit" address="0xC66D" position="5" />
+                    <property name="rollout"     type="bit" address="0xC66D" position="6" />
+                    <property name="in_love"     type="bit" address="0xC66D" position="7" />
+                    <property name="curled"      type="bit" address="0xC66E" position="0" />
+                    <property name="bide"        type="bit" address="0xC66F" position="0" />
+                    <property name="rampage"     type="bit" address="0xC66F" position="1" />
+                    <property name="in_loop"     type="bit" address="0xC66F" position="2" />
+                    <property name="flinched"    type="bit" address="0xC66F" position="3" />
+                    <property name="charged"     type="bit" address="0xC66F" position="4" />
+                    <property name="underground" type="bit" address="0xC66F" position="5" />
+                    <property name="flying"      type="bit" address="0xC66F" position="6" />
+                    <property name="confused"    type="bit" address="0xC66F" position="7" />
+                    <property name="x_accuracy"  type="bit" address="0xC670" position="0" />
+                    <property name="mist"        type="bit" address="0xC670" position="1" />
+                    <property name="focus_energ" type="bit" address="0xC670" position="2" />
+                    <property name="substitute"  type="bit" address="0xC670" position="4" />
+                    <property name="recharge"    type="bit" address="0xC670" position="5" />
+                    <property name="rage"        type="bit" address="0xC670" position="6" />
+                    <property name="leech_seed"  type="bit" address="0xC670" position="7" />
+                    <property name="toxic"       type="bit" address="0xC671" position="0" />
+                    <property name="transformed" type="bit" address="0xC671" position="3" />
+                    <property name="encored"     type="bit" address="0xC671" position="4" />
+                    <property name="lock_on"     type="bit" address="0xC671" position="5" />
+                    <property name="destiny_bon" type="bit" address="0xC671" position="6" />
+                    <property name="cant_run"    type="bit" address="0xC671" position="7" />
+                </status>
+            </enemyPokemon>
+            <field>
+                <player>
+                    <property name="statusSafeguard"   type="bit" address="0xCBDD" position="2" />
+                    <property name="statusReflect"     type="bit" address="0xCBDD" position="4" />
+                    <property name="statusLightScreen" type="bit" address="0xCBDD" position="3" />
+                    <property name="safeguardCount"    type="int" address="0xCBDF" />
+                    <property name="lightScreenCount"  type="int" address="0xCBE0" />
+                    <property name="reflectCount"      type="int" address="0xCBE1" />
+                </player>
+                <enemy>
+                    <property name="statusSafeguard"   type="bit" address="0xCBDE" position="2" />
+                    <property name="statusReflect"     type="bit" address="0xCBDE" position="4" />
+                    <property name="statusLightScreen" type="bit" address="0xCBDE" position="3" />
+                    <property name="safeguardCount"    type="int" address="0xCBE3" />
+                    <property name="lightScreenCount"  type="int" address="0xCBE4" />
+                    <property name="reflectCount"      type="int" address="0xCBE5" />
+                </enemy>
+                <property name="weather"      type="int" address="0xCBE8" reference="weather" />
+                <property name="weatherCount" type="int" address="0xCBE9" />
+            </field>
+            <other>
+                <property name="currentDamage"   type="int" address="0xD256" length="2" />
+                <property name="lowHealthAlarm"  type="bool" address="0xC6FD" reference="lowHealthAlarm" />
+                <property name="miss"            type="int" address="0xCB45" length="1" />
+                <property name="turnEnded"       type="int" address="0xCB92" length="1" />
+                <property name="playerTurnTaken" type="int" address="0xCBBb" length="1" />
+                <property name="enemyTurnTaken"  type="int" address="0xCBBa" length="1" />
+            </other>
+        </battle>
+
+        <audio>
+            <property name="mapMusic"     type="int" address="0xC2C0" />
+            <property name="currentSound" type="int" address="0xC2BF" />
+            <property name="musicId"      type="int" address="0xC29D" length="2" />
+            <!-- <property name="musicId"      type="int" address="0xC29D" /> -->
+            <property name="musicBank"    type="int" address="0xC29F" />
+            <!-- <property name="channel1"     type="macro" address="0xC101" macro="audioChannel" />
+            <property name="channel2"     type="macro" address="0xC133" macro="audioChannel" />
+            <property name="channel3"     type="macro" address="0xC165" macro="audioChannel" />
+            <property name="channel4"     type="macro" address="0xC197" macro="audioChannel" />
+            <property name="channel5"     type="macro" address="0xC1C9" macro="audioChannel" />
+            <property name="channel6"     type="macro" address="0xC1FB" macro="audioChannel" />
+            <property name="channel7"     type="macro" address="0xC22D" macro="audioChannel" />
+            <property name="channel8"     type="macro" address="0xC25F" macro="audioChannel" /> -->
+            <property name="channel1MusicID" type="int" address="0xC101" length="2" />
+            <property name="channel2MusicID" type="int" address="0xC133" length="2" />
+            <property name="channel3MusicID" type="int" address="0xC165" length="2" />
+            <property name="channel4MusicID" type="int" address="0xC197" length="2" />
+            <property name="channel5MusicID" type="int" address="0xC1C9" length="2" />
+            <property name="channel6MusicID" type="int" address="0xC1FB" length="2" />
+            <property name="channel7MusicID" type="int" address="0xC22D" length="2" />
+            <property name="channel8MusicID" type="int" address="0xC25F" length="2" />
+        </audio>
+
+        <screen>
+            <text>
+                <property name="prompt" type="string" address="0xC606" reference="textPrompt" />
+            </text>
+            <menu>
+                <property name="currentItem" type="int" address="0xCC26" />
+                <property name="wMenuFlags"  type="int" address="0xCF81" />
+                <property name="wMenuCursorPosition"           type="int" address="0xCF88" />
+                <property name="wPCItemsCursor"                type="int" address="0xD0D7" />
+                <property name="wPartyMenuCursor"              type="int" address="0xD0D8" />
+                <property name="wItemsPocketCursor"            type="int" address="0xD0D9" />
+                <property name="wKeyItemsPocketCursor"         type="int" address="0xD0Da" />
+                <property name="wBallsPocketCursor"            type="int" address="0xD0Db" />
+                <property name="wTMHMPocketCursor"             type="int" address="0xD0Dc" />
+                <property name="wPCItemsScrollPosition"        type="int" address="0xD0Dd" />
+                <property name="wItemsPocketScrollPosition"    type="int" address="0xD0Df" />
+                <property name="wKeyItemsPocketScrollPosition" type="int" address="0xD0E0" />
+                <property name="wBallsPocketScrollPosition"    type="int" address="0xD0E1" />
+                <property name="wTMHMPocketScrollPosition"     type="int" address="0xD0E2" />
+            </menu>
+            <tiles>
+                <column1>
+                    <property name="tile1" type="int" address="0x980C" />
+                    <property name="tile2" type="int" address="0x982C" />
+                    <property name="tile3" type="int" address="0x984C" />
+                    <property name="tile4" type="int" address="0x986C" />
+                    <property name="tile5" type="int" address="0x988C" />
+                    <property name="tile6" type="int" address="0x98AC" />
+                    <property name="tile7" type="int" address="0x98CC" />
+                </column1>
+            </tiles>
+        </screen>
+
+        <options>
+            <!-- <property name="clockDay"         type="string" address="0xXXXX" length="5" /> -->
+            <!-- <property name="clockTime"        type="string" address="0xXXXX" length="5" /> -->
+            <property name="textSpeed2"       type="bit"    address="0xD199" position="1" description="False+False = Fast, True+False = Mid, True+True = Slow" />
+            <property name="textSpeed3"       type="bit"    address="0xD199" position="2" description="False+False = Fast, True+False = Mid, True+True = Slow" />
+            <property name="sound"            type="bit"    address="0xD199" position="5" description="Mono = False, Stereo = True" />
+            <property name="battleStyle"      type="bit"    address="0xD199" position="6" description="Shift = False, Set = True" />
+            <property name="battleAnimations" type="bit"    address="0xD199" position="7" description="On = False, Off = True" />
+        </options>
+
+        <gameTime>
+            <property name="hours"   type="int" address="0xD1EB" length="2" />
+            <property name="minutes" type="int" address="0xD1ED" />
+            <property name="seconds" type="int" address="0xD1EE" />
+            <property name="frames"  type="int" address="0xD1EF" />
+        </gameTime>
+
+        <time>
+            <current>
+                <property name="day"       type="int" address="0xD1F2" reference="dayNames" postprocessor-reader="x % 7" />
+                <property name="hour"      type="int" address="0xFF96" />
+                <property name="minute"    type="int" address="0xFF98" />
+                <property name="second"    type="int" address="0xFF9a" />
+                <property name="dst"       type="bit" address="0xd1e8" position="7" />
+                <property name="timeOfDay" type="int" address="0xd157" reference="timeOfDay" />
+            </current>
+            <start>
+                <property name="day"       type="int" address="0xD1DC" reference="dayNames" />
+                <property name="hour"      type="int" address="0xD1DD" />
+                <property name="minute"    type="int" address="0xD1DE" />
+                <property name="second"    type="int" address="0xD1DF" />
+            </start>
+            <rtc>
+                <property name="day"       type="int" address="0xff8f" length="2" postprocessor-reader="(x % 512) % 7" />
+                <property name="hour"      type="int" address="0xFF91" />
+                <property name="minute"    type="int" address="0xFF92" />
+                <property name="second"    type="int" address="0xFF93" />
+                <property name="dayHi"     type="int" address="0xFF94" />
+                <property name="dayLo"     type="int" address="0xFF95" />
+            </rtc>
+            <gameClock>
+                <property name="day" type="int" address="0xD4B6" reference="dayNames" />
+            </gameClock>
+        </time>
+
+        <patch>
+            <property name="patchPresent" type="int" size="1" address="0x3fb5" postprocessor-reader="x != 0" />
+            <property name="turnCounter"  type="int" size="2" address="0xCfd8" />
+            <time>
+                <property name="frameCount"       type="int" size="4" address="0x10191" />
+                <property name="oWFrameCount"     type="int" size="4" address="0x10195" />
+                <property name="battleFrameCount" type="int" size="4" address="0x10199" />
+                <property name="menuFrameCount"   type="int" size="4" address="0x1019D" />
+                <property name="introsFrameCount" type="int" size="4" address="0x101A1" />
+            </time>
+            <saves>
+                <property name="saveCount"       type="int" length="2" address="0x101A5" />
+                <property name="reloadCount"     type="int" length="2" address="0x101A7" />
+                <property name="clockResetCount" type="int" length="2" address="0x101A9" />
+            </saves>
+            <steps>
+                <property name="stepCount"     type="int" length="4" address="0x101AB" />
+                <property name="stepCountWalk" type="int" length="4" address="0x101AF" />
+                <property name="stepCountSurf" type="int" length="4" address="0x101B3" />
+                <property name="stepCountBike" type="int" length="4" address="0x101B7" />
+                <property name="bonks"         type="int" length="2" address="0x101BB" />
+            </steps>
+            <battles>
+                <battles>
+                    <property name="battles"        type="int" length="2" address="0x10223" />
+                    <property name="trainerBattles" type="int" length="2" address="0x10225" />
+                    <property name="wildBattles"    type="int" length="2" address="0x10227" />
+                    <property name="battlesFled"    type="int" length="2" address="0x10229" />
+                    <property name="failedRuns"     type="int" length="2" address="0x1022b" />
+                </battles>
+                <battle_info>
+                    <damage>
+                        <property name="totalDamageDealt"  type="int" length="4" address="0x101BD" />
+                        <property name="actualDamageDealt" type="int" length="4" address="0x101C1" />
+                        <property name="totalDamageTaken"  type="int" length="4" address="0x101C5" />
+                        <property name="actualDamageTaken" type="int" length="4" address="0x101C9" />
+                    </damage>
+                    <hits>
+                        <property name="ownMovesHit"      type="int" length="2" address="0x101CD" />
+                        <property name="ownMovesMissed"   type="int" length="2" address="0x101CF" />
+                        <property name="enemyMovesHit"    type="int" length="2" address="0x101D1" />
+                        <property name="enemyMovesMissed" type="int" length="2" address="0x101D3" />
+                        <property name="ownMovesSE"       type="int" length="2" address="0x101D5" />
+                        <property name="ownMovesNVE"      type="int" length="2" address="0x101D7" />
+                        <property name="enemyMovesSE"     type="int" length="2" address="0x101D9" />
+                        <property name="enemyMovesNVE"    type="int" length="2" address="0x101Db" />
+                        <property name="criticalsDealt"   type="int" length="2" address="0x101Dd" />
+                        <property name="oHKOsDealt"       type="int" length="2" address="0x101Df" />
+                        <property name="criticalsTaken"   type="int" length="2" address="0x101E1" />
+                        <property name="oHKOsTaken"       type="int" length="2" address="0x101E3" />
+                    </hits>
+                    <status>
+                        <property name="wasConfused"                type="int" length="2" address="0x101E5" />
+                        <property name="enemyBecameConfused"        type="int" length="2" address="0x101E7" />
+                        <property name="wasParalyzed"               type="int" length="2" address="0x101E9" />
+                        <property name="enemyWasParalyzed"          type="int" length="2" address="0x101Eb" />
+                        <property name="wasBurned"                  type="int" length="2" address="0x101Ed" />
+                        <property name="enemyWasBurned"             type="int" length="2" address="0x101Ef" />
+                        <property name="wasFrozen"                  type="int" length="2" address="0x101F1" />
+                        <property name="enemyWasFrozen"             type="int" length="2" address="0x101F3" />
+                        <property name="wasPoisoned"                type="int" length="2" address="0x101F5" />
+                        <property name="enemyWasPoisoned"           type="int" length="2" address="0x101F7" />
+                        <property name="wasPoisonedBadly"           type="int" length="2" address="0x101F9" />
+                        <property name="enemyWasPoisonedBadly"      type="int" length="2" address="0x101Fb" />
+                        <property name="fellAsleep"                 type="int" length="2" address="0x101Fd" />
+                        <property name="enemyFellAsleep"            type="int" length="2" address="0x101Ff" />
+                        <property name="playerTurnsConfused"        type="int" length="2" address="0x10201" />
+                        <property name="playerTurnsConfusedHitSelf" type="int" length="2" address="0x10203" />
+                        <property name="playerTurnsParalyzed"       type="int" length="2" address="0x10205" />
+                        <property name="playerTurnsParalyzedFully"  type="int" length="2" address="0x10207" />
+                        <property name="enemyTurnsConfused"         type="int" length="2" address="0x10209" />
+                        <property name="enemyTurnsConfusedHitSelf"  type="int" length="2" address="0x1020B" />
+                        <property name="enemyTurnsParalyzed"        type="int" length="2" address="0x1020D" />
+                        <property name="enemyTurnsParalyzedFully"   type="int" length="2" address="0x1020F" />
+                    </status>
+                    <heals>
+                        <property name="playerHPHealed" type="int" length="4" address="0x10211" />
+                        <property name="enemyHPHealed"  type="int" length="4" address="0x10215" />
+                    </heals>
+                    <property name="playerPokemonFainted" type="int" length="2" address="0x10219" />
+                    <property name="enemyPokemonFainted"  type="int" length="2" address="0x1021B" />
+                    <property name="experienceGained"     type="int" length="4" address="0x1021D" />
+                    <property name="switchouts"           type="int" length="2" address="0x10221" />
+                </battle_info>
+                <money>
+                    <property name="moneyMade"  type="int" length="4" address="0x1022D" />
+                    <property name="moneySpent" type="int" length="4" address="0x10231" />
+                    <property name="moneyLost"  type="int" length="4" address="0x10235" />
+                </money>
+                <info>
+                    <property name="itemsPickedUp" type="int" length="2" address="0x10239" />
+                    <property name="itemsBought"   type="int" length="2" address="0x1023B" />
+                    <property name="itemsSold"     type="int" length="2" address="0x1023D" />
+                </info>
+                <catching>
+                    <property name="ballsThrown"          type="int" length="2" address="0x10241" />
+                    <property name="pokemonCaughtInBalls" type="int" length="2" address="0x10243" />
+                    <property name="numPokemaniacsFought" type="int" length="2" address="0x10245" />
+                    <property name="movesLearnt"          type="int" length="2" address="0x1023F" />
+                </catching>
+                <property name="movesLearnt" type="int" length="2" address="0x1023F" />
+            </battles>
+        </patch>
+        <game>
+            <property name="generation" type="int" value="2" />
+        </game>
+    </properties>
+
+    <references>
+        <dayNames>
+            <entry key="0x00" value="Sunday" />
+            <entry key="0x01" value="Monday" />
+            <entry key="0x02" value="Tuesday" />
+            <entry key="0x03" value="Wednesday" />
+            <entry key="0x04" value="Thursday" />
+            <entry key="0x05" value="Friday" />
+            <entry key="0x06" value="Satuday" />
+        </dayNames>
+        <timeOfDay>
+            <entry key="0x00" value="Morning" />
+            <entry key="0x01" value="Day" />
+            <entry key="0x02" value="Night" />
+        </timeOfDay>
+        <battleModes>
+            <entry key="0x00" />
+            <entry key="0x01" value="Wild" />
+            <entry key="0x02" value="Trainer" />
+        </battleModes>
+        <battleTypes>
+            <entry key="0x00" value="NORMAL" />
+            <entry key="0x01" value="CANLOSE" />
+            <entry key="0x02" value="DEBUG" />
+            <entry key="0x03" value="TUTORIAL" />
+            <entry key="0x04" value="FISH" />
+            <entry key="0x05" value="ROAMING" />
+            <entry key="0x06" value="CONTEST" />
+            <entry key="0x07" value="SHINY" />
+            <entry key="0x08" value="TREE" />
+            <entry key="0x09" value="TRAP" />
+            <entry key="0x0A" value="FORCEITEM" />
+            <entry key="0x0B" value="CELEBI" />
+            <entry key="0x0C" value="SUICUNE" />
+        </battleTypes>
+        <battleResults>
+            <entry key="0x00" value="WIN" />
+            <entry key="0x01" value="LOSE" />
+            <entry key="0x02" value="DRAW" />
+            <entry key="0x40" value="WIN" />
+            <entry key="0x41" value="LOSE" />
+            <entry key="0x42" value="DRAW" />
+            <entry key="0x80" value="WIN" />
+            <entry key="0x81" value="LOSE" />
+            <entry key="0x82" value="DRAW" />
+            <entry key="0xC0" value="WIN" />
+            <entry key="0xC1" value="LOSE" />
+            <entry key="0xC2" value="DRAW" />
+        </battleResults>
+        <lowHealthAlarm>
+            <entry key="0x00" value="Enabled" />
+            <entry key="0x01" value="Disabled" />
+        </lowHealthAlarm>
+        <trainerClasses>
+            <entry key="0x00" value="NOBODY" />
+            <entry key="0x01" value="FALKNER" />
+            <entry key="0x02" value="WHITNEY" />
+            <entry key="0x03" value="BUGSY" />
+            <entry key="0x04" value="MORTY" />
+            <entry key="0x05" value="PRYCE" />
+            <entry key="0x06" value="JASMINE" />
+            <entry key="0x07" value="CHUCK" />
+            <entry key="0x08" value="CLAIR" />
+            <entry key="0x09" value="RIVAL1" />
+            <entry key="0x0A" value="POKEMON PROF." />
+            <entry key="0x0B" value="WILL" />
+            <entry key="0x0C" value="CAL" />
+            <entry key="0x0D" value="BRUNO" />
+            <entry key="0x0E" value="KAREN" />
+            <entry key="0x0F" value="KOGA" />
+            <entry key="0x10" value="CHAMPION" />
+            <entry key="0x11" value="BROCK" />
+            <entry key="0x12" value="MISTY" />
+            <entry key="0x13" value="LT. SURGE" />
+            <entry key="0x14" value="SCIENTIST" />
+            <entry key="0x15" value="ERIKA" />
+            <entry key="0x16" value="YOUNGSTER" />
+            <entry key="0x17" value="SCHOOLBOY" />
+            <entry key="0x18" value="BIRD KEEPER" />
+            <entry key="0x19" value="LASS" />
+            <entry key="0x1A" value="JANINE" />
+            <entry key="0x1B" value="COOLTRAINER M" />
+            <entry key="0x1C" value="COOLTRAINER F" />
+            <entry key="0x1D" value="BEAUTY" />
+            <entry key="0x1E" value="POKEMANIAC" />
+            <entry key="0x1F" value="GRUNT M" />
+            <entry key="0x20" value="GENTLEMAN" />
+            <entry key="0x21" value="SKIER" />
+            <entry key="0x22" value="TEACHER" />
+            <entry key="0x23" value="SABRINA" />
+            <entry key="0x24" value="BUG CATCHER" />
+            <entry key="0x25" value="FISHER" />
+            <entry key="0x26" value="SWIMMER M" />
+            <entry key="0x27" value="SWIMMER F" />
+            <entry key="0x28" value="SAILOR" />
+            <entry key="0x29" value="SUPER NERD" />
+            <entry key="0x2A" value="RIVAL2" />
+            <entry key="0x2B" value="GUITARIST" />
+            <entry key="0x2C" value="HIKER" />
+            <entry key="0x2D" value="BIKER" />
+            <entry key="0x2E" value="BLAINE" />
+            <entry key="0x2F" value="BURGLAR" />
+            <entry key="0x30" value="FIREBREATHER" />
+            <entry key="0x31" value="JUGGLER" />
+            <entry key="0x32" value="BLACKBELT" />
+            <entry key="0x33" value="EXECUTIVE M" />
+            <entry key="0x34" value="PSYCHIC" />
+            <entry key="0x35" value="PICNICKER" />
+            <entry key="0x36" value="CAMPER" />
+            <entry key="0x37" value="EXECUTIVE F" />
+            <entry key="0x38" value="SAGE" />
+            <entry key="0x39" value="MEDIUM" />
+            <entry key="0x3A" value="BOARDER" />
+            <entry key="0x3B" value="POKEFAN M" />
+            <entry key="0x3C" value="KIMONO GIRL" />
+            <entry key="0x3D" value="TWINS" />
+            <entry key="0x3E" value="POKEFAN F" />
+            <entry key="0x3F" value="RED" />
+            <entry key="0x40" value="BLUE" />
+            <entry key="0x41" value="OFFICER" />
+            <entry key="0x42" value="GRUNT F" />
+            <entry key="0x43" value="MYSTICAL MAN" />
+        </trainerClasses>
+        <bikeStatus>
+            <entry key="0x00" value="Walking" />
+            <entry key="0x01" value="Biking" />
+        </bikeStatus>
+        <gender>
+            <entry key="0x00" value="Male" />
+            <entry key="0x01" value="Female" />
+        </gender>
+        <weather>
+            <entry key="0x00" />
+            <entry key="0x01" value="Rain" />
+            <entry key="0x02" value="Sun" />
+            <entry key="0x03" value="Sandstorm" />
+        </weather>
+        <types>
+            <entry key="0x00" value="Normal" />
+            <entry key="0x01" value="Fighting" />
+            <entry key="0x02" value="Flying" />
+            <entry key="0x03" value="Poison" />
+            <entry key="0x04" value="Ground" />
+            <entry key="0x05" value="Rock" />
+            <entry key="0x07" value="Bug" />
+            <entry key="0x08" value="Ghost" />
+            <entry key="0x09" value="Steel" />
+            <entry key="0x13" value="Curse" />
+            <entry key="0x14" value="Fire" />
+            <entry key="0x15" value="Water" />
+            <entry key="0x16" value="Grass" />
+            <entry key="0x17" value="Electric" />
+            <entry key="0x18" value="Psychic" />
+            <entry key="0x19" value="Ice" />
+            <entry key="0x1A" value="Dragon" />
+            <entry key="0x1B" value="Dark" />
+        </types>
+        <statusConditions>
+            <entry key="0x00" />
+            <entry key="0x01" value="SLP" />
+            <entry key="0x02" value="SLP" />
+            <entry key="0x03" value="SLP" />
+            <entry key="0x04" value="SLP" />
+            <entry key="0x05" value="SLP" />
+            <entry key="0x06" value="SLP" />
+            <entry key="0x08" value="PSN" />
+            <entry key="0x10" value="BRN" />
+            <entry key="0x20" value="FRZ" />
+            <entry key="0x40" value="PRZ" />
+        </statusConditions>
+        <defaultCharacterMap>
+            <entry key="0x50" />
+            <entry key="0x00" value=" " />
+            <entry key="0x54" value="#" />
+            <entry key="0x75" value="…" />
+            <entry key="0x79" value="┌" />
+            <entry key="0x7A" value="─" />
+            <entry key="0x7B" value="┐" />
+            <entry key="0x7C" value="│" />
+            <entry key="0x7D" value="└" />
+            <entry key="0x7E" value="┘" />
+            <entry key="0x74" value="№" />
+            <entry key="0x7F" value=" " />
+            <entry key="0x80" value="A" />
+            <entry key="0x81" value="B" />
+            <entry key="0x82" value="C" />
+            <entry key="0x83" value="D" />
+            <entry key="0x84" value="E" />
+            <entry key="0x85" value="F" />
+            <entry key="0x86" value="G" />
+            <entry key="0x87" value="H" />
+            <entry key="0x88" value="I" />
+            <entry key="0x89" value="J" />
+            <entry key="0x8A" value="K" />
+            <entry key="0x8B" value="L" />
+            <entry key="0x8C" value="M" />
+            <entry key="0x8D" value="N" />
+            <entry key="0x8E" value="O" />
+            <entry key="0x8F" value="P" />
+            <entry key="0x90" value="Q" />
+            <entry key="0x91" value="R" />
+            <entry key="0x92" value="S" />
+            <entry key="0x93" value="T" />
+            <entry key="0x94" value="U" />
+            <entry key="0x95" value="V" />
+            <entry key="0x96" value="W" />
+            <entry key="0x97" value="X" />
+            <entry key="0x98" value="Y" />
+            <entry key="0x99" value="Z" />
+            <entry key="0x9A" value="(" />
+            <entry key="0x9B" />
+            <entry key="0x9C" value=":" />
+            <entry key="0x9D" value=";" />
+            <entry key="0x9E" value="[" />
+            <entry key="0x9F" value="]" />
+            <entry key="0xA0" value="a" />
+            <entry key="0xA1" value="b" />
+            <entry key="0xA2" value="c" />
+            <entry key="0xA3" value="d" />
+            <entry key="0xA4" value="e" />
+            <entry key="0xA5" value="f" />
+            <entry key="0xA6" value="g" />
+            <entry key="0xA7" value="h" />
+            <entry key="0xA8" value="i" />
+            <entry key="0xA9" value="j" />
+            <entry key="0xAA" value="k" />
+            <entry key="0xAB" value="l" />
+            <entry key="0xAC" value="m" />
+            <entry key="0xAD" value="n" />
+            <entry key="0xAE" value="o" />
+            <entry key="0xAF" value="p" />
+            <entry key="0xB0" value="q" />
+            <entry key="0xB1" value="r" />
+            <entry key="0xB2" value="s" />
+            <entry key="0xB3" value="t" />
+            <entry key="0xB4" value="u" />
+            <entry key="0xB5" value="v" />
+            <entry key="0xB6" value="w" />
+            <entry key="0xB7" value="x" />
+            <entry key="0xB8" value="y" />
+            <entry key="0xB9" value="z" />
+            <entry key="0xBA" value="é" />
+            <entry key="0xBB" value="d" />
+            <entry key="0xBC" value="l" />
+            <entry key="0xBD" value="s" />
+            <entry key="0xBE" value="t" />
+            <entry key="0xBF" value="v" />
+            <entry key="0xE0" value=" " />
+            <entry key="0xE3" value="-" />
+            <entry key="0xE4" value="r" />
+            <entry key="0xE5" value="m" />
+            <entry key="0xE6" value=" " />
+            <entry key="0xE7" value="!" />
+            <entry key="0xE8" value="." />
+            <entry key="0xED" value="▶" />
+            <entry key="0xEF" value="♂" />
+            <entry key="0xF0" value="¥" />
+            <entry key="0xF1" value="×" />
+            <entry key="0xF3" value="/" />
+            <entry key="0xF4" value=":" />
+            <entry key="0xF5" value="♀" />
+            <entry key="0xF6" value="0" />
+            <entry key="0xF7" value="1" />
+            <entry key="0xF8" value="2" />
+            <entry key="0xF9" value="3" />
+            <entry key="0xFA" value="4" />
+            <entry key="0xFB" value="5" />
+            <entry key="0xFC" value="6" />
+            <entry key="0xFD" value="7" />
+            <entry key="0xFE" value="8" />
+            <entry key="0xFF" value="9" />
+        </defaultCharacterMap>
+        <stageModifiers type="number">
+            <entry key="0x00" />
+            <entry key="0x01" value="-6" />
+            <entry key="0x02" value="-5" />
+            <entry key="0x03" value="-4" />
+            <entry key="0x04" value="-3" />
+            <entry key="0x05" value="-2" />
+            <entry key="0x06" value="-1" />
+            <entry key="0x07" value="0" />
+            <entry key="0x08" value="1" />
+            <entry key="0x09" value="2" />
+            <entry key="0x0A" value="3" />
+            <entry key="0x0B" value="4" />
+            <entry key="0x0C" value="5" />
+            <entry key="0x0D" value="6" />
+            <entry key="0x0E" />
+            <entry key="0x14" />
+        </stageModifiers>
+        <hms>
+            <entry key="0x01" value="Cut" />
+        </hms>
+        <moves>
+            <entry key="0x00" />
+            <entry key="0x01" value="Pound" />
+            <entry key="0x02" value="Karate Chop" />
+            <entry key="0x03" value="DoubleSlap" />
+            <entry key="0x04" value="Comet Punch" />
+            <entry key="0x05" value="Mega Punch" />
+            <entry key="0x06" value="Pay Day" />
+            <entry key="0x07" value="Fire Punch" />
+            <entry key="0x08" value="Ice Punch" />
+            <entry key="0x09" value="ThunderPunch" />
+            <entry key="0x0A" value="Scratch" />
+            <entry key="0x0B" value="ViceGrip" />
+            <entry key="0x0C" value="Guillotine" />
+            <entry key="0x0D" value="Razor Wind" />
+            <entry key="0x0E" value="Swords Dance" />
+            <entry key="0x0F" value="Cut" />
+            <entry key="0x10" value="Gust" />
+            <entry key="0x11" value="Wing Attack" />
+            <entry key="0x12" value="Whirlwind" />
+            <entry key="0x13" value="Fly" />
+            <entry key="0x14" value="Bind" />
+            <entry key="0x15" value="Slam" />
+            <entry key="0x16" value="Vine Whip" />
+            <entry key="0x17" value="Stomp" />
+            <entry key="0x18" value="Double Kick" />
+            <entry key="0x19" value="Mega Kick" />
+            <entry key="0x1A" value="Jump Kick" />
+            <entry key="0x1B" value="Rolling Kick" />
+            <entry key="0x1C" value="Sand-Attack" />
+            <entry key="0x1D" value="Headbutt" />
+            <entry key="0x1E" value="Horn Attack" />
+            <entry key="0x1F" value="Fury Attack" />
+            <entry key="0x20" value="Horn Drill" />
+            <entry key="0x21" value="Tackle" />
+            <entry key="0x22" value="Body Slam" />
+            <entry key="0x23" value="Wrap" />
+            <entry key="0x24" value="Take Down" />
+            <entry key="0x25" value="Thrash" />
+            <entry key="0x26" value="Double-Edge" />
+            <entry key="0x27" value="Tail Whip" />
+            <entry key="0x28" value="Poison Sting" />
+            <entry key="0x29" value="Twineedle" />
+            <entry key="0x2A" value="Pin Missile" />
+            <entry key="0x2B" value="Leer" />
+            <entry key="0x2C" value="Bite" />
+            <entry key="0x2D" value="Growl" />
+            <entry key="0x2E" value="Roar" />
+            <entry key="0x2F" value="Sing" />
+            <entry key="0x30" value="Supersonic" />
+            <entry key="0x31" value="SonicBoom" />
+            <entry key="0x32" value="Disable" />
+            <entry key="0x33" value="Acid" />
+            <entry key="0x34" value="Ember" />
+            <entry key="0x35" value="Flamethrower" />
+            <entry key="0x36" value="Mist" />
+            <entry key="0x37" value="Water Gun" />
+            <entry key="0x38" value="Hydro Pump" />
+            <entry key="0x39" value="Surf" />
+            <entry key="0x3A" value="Ice Beam" />
+            <entry key="0x3B" value="Blizzard" />
+            <entry key="0x3C" value="Psybeam" />
+            <entry key="0x3D" value="BubbleBeam" />
+            <entry key="0x3E" value="Aurora Beam" />
+            <entry key="0x3F" value="Hyper Beam" />
+            <entry key="0x40" value="Peck" />
+            <entry key="0x41" value="Drill Peck" />
+            <entry key="0x42" value="Submission" />
+            <entry key="0x43" value="Low Kick" />
+            <entry key="0x44" value="Counter" />
+            <entry key="0x45" value="Seismic Toss" />
+            <entry key="0x46" value="Strength" />
+            <entry key="0x47" value="Absorb" />
+            <entry key="0x48" value="Mega Drain" />
+            <entry key="0x49" value="Leech Seed" />
+            <entry key="0x4A" value="Growth" />
+            <entry key="0x4B" value="Razor Leaf" />
+            <entry key="0x4C" value="SolarBeam" />
+            <entry key="0x4D" value="Poisonpowder" />
+            <entry key="0x4E" value="Stun Spore" />
+            <entry key="0x4F" value="Sleep Powder" />
+            <entry key="0x50" value="Petal Dance" />
+            <entry key="0x51" value="String Shot" />
+            <entry key="0x52" value="Dragon Rage" />
+            <entry key="0x53" value="Fire Spin" />
+            <entry key="0x54" value="Thundershock" />
+            <entry key="0x55" value="Thunderbolt" />
+            <entry key="0x56" value="Thunder Wave" />
+            <entry key="0x57" value="Thunder" />
+            <entry key="0x58" value="Rock Throw" />
+            <entry key="0x59" value="Earthquake" />
+            <entry key="0x5A" value="Fissure" />
+            <entry key="0x5B" value="Dig" />
+            <entry key="0x5C" value="Toxic" />
+            <entry key="0x5D" value="Confusion" />
+            <entry key="0x5E" value="Psychic" />
+            <entry key="0x5F" value="Hypnosis" />
+            <entry key="0x60" value="Meditate" />
+            <entry key="0x61" value="Agility" />
+            <entry key="0x62" value="Quick Attack" />
+            <entry key="0x63" value="Rage" />
+            <entry key="0x64" value="Teleport" />
+            <entry key="0x65" value="Night Shade" />
+            <entry key="0x66" value="Mimic" />
+            <entry key="0x67" value="Screech" />
+            <entry key="0x68" value="Double Team" />
+            <entry key="0x69" value="Recover" />
+            <entry key="0x6A" value="Harden" />
+            <entry key="0x6B" value="Minimize" />
+            <entry key="0x6C" value="Smokescreen" />
+            <entry key="0x6D" value="Confuse Ray" />
+            <entry key="0x6E" value="Withdraw" />
+            <entry key="0x6F" value="Defense Curl" />
+            <entry key="0x70" value="Barrier" />
+            <entry key="0x71" value="Light Screen" />
+            <entry key="0x72" value="Haze" />
+            <entry key="0x73" value="Reflect" />
+            <entry key="0x74" value="Focus Energy" />
+            <entry key="0x75" value="Bide" />
+            <entry key="0x76" value="Metronome" />
+            <entry key="0x77" value="Mirror Move" />
+            <entry key="0x78" value="Selfdestruct" />
+            <entry key="0x79" value="Egg Bomb" />
+            <entry key="0x7A" value="Lick" />
+            <entry key="0x7B" value="Smog" />
+            <entry key="0x7C" value="Sludge" />
+            <entry key="0x7D" value="Bone Club" />
+            <entry key="0x7E" value="Fire Blast" />
+            <entry key="0x7F" value="Waterfall" />
+            <entry key="0x80" value="Clamp" />
+            <entry key="0x81" value="Swift" />
+            <entry key="0x82" value="Skull Bash" />
+            <entry key="0x83" value="Spike Cannon" />
+            <entry key="0x84" value="Constrict" />
+            <entry key="0x85" value="Amnesia" />
+            <entry key="0x86" value="Kinesis" />
+            <entry key="0x87" value="Softboiled" />
+            <entry key="0x88" value="Hi Jump Kick" />
+            <entry key="0x89" value="Glare" />
+            <entry key="0x8A" value="Dream Eater" />
+            <entry key="0x8B" value="Poison Gas" />
+            <entry key="0x8C" value="Barrage" />
+            <entry key="0x8D" value="Leech Life" />
+            <entry key="0x8E" value="Lovely Kiss" />
+            <entry key="0x8F" value="Sky Attack" />
+            <entry key="0x90" value="Transform" />
+            <entry key="0x91" value="Bubble" />
+            <entry key="0x92" value="Dizzy Punch" />
+            <entry key="0x93" value="Spore" />
+            <entry key="0x94" value="Flash" />
+            <entry key="0x95" value="Psywave" />
+            <entry key="0x96" value="Splash" />
+            <entry key="0x97" value="Acid Armor" />
+            <entry key="0x98" value="Crabhammer" />
+            <entry key="0x99" value="Explosion" />
+            <entry key="0x9A" value="Fury Swipes" />
+            <entry key="0x9B" value="Bonemerang" />
+            <entry key="0x9C" value="Rest" />
+            <entry key="0x9D" value="Rock Slide" />
+            <entry key="0x9E" value="Hyper Fang" />
+            <entry key="0x9F" value="Sharpen" />
+            <entry key="0xA0" value="Conversion" />
+            <entry key="0xA1" value="Tri Attack" />
+            <entry key="0xA2" value="Super Fang" />
+            <entry key="0xA3" value="Slash" />
+            <entry key="0xA4" value="Substitute" />
+            <entry key="0xA5" value="Struggle" />
+            <entry key="0xA6" value="Sketch" />
+            <entry key="0xA7" value="Triple Kick" />
+            <entry key="0xA8" value="Thief" />
+            <entry key="0xA9" value="Spider Web" />
+            <entry key="0xAA" value="Mind Reader" />
+            <entry key="0xAB" value="Nightmare" />
+            <entry key="0xAC" value="Flame Wheel" />
+            <entry key="0xAD" value="Snore" />
+            <entry key="0xAE" value="Curse" />
+            <entry key="0xAF" value="Flail" />
+            <entry key="0xB0" value="Conversion2" />
+            <entry key="0xB1" value="Aeroblast" />
+            <entry key="0xB2" value="Cotton Spore" />
+            <entry key="0xB3" value="Reversal" />
+            <entry key="0xB4" value="Spite" />
+            <entry key="0xB5" value="Powder Snow" />
+            <entry key="0xB6" value="Protect" />
+            <entry key="0xB7" value="Mach Punch" />
+            <entry key="0xB8" value="Scary Face" />
+            <entry key="0xB9" value="Faint Attack" />
+            <entry key="0xBA" value="Sweet Kiss" />
+            <entry key="0xBB" value="Belly Drum" />
+            <entry key="0xBC" value="Sludge Bomb" />
+            <entry key="0xBD" value="Mud-Slap" />
+            <entry key="0xBE" value="Octazooka" />
+            <entry key="0xBF" value="Spikes" />
+            <entry key="0xC0" value="Zap Cannon" />
+            <entry key="0xC1" value="Foresight" />
+            <entry key="0xC2" value="Destiny Bond" />
+            <entry key="0xC3" value="Perish Song" />
+            <entry key="0xC4" value="Icy Wind" />
+            <entry key="0xC5" value="Detect" />
+            <entry key="0xC6" value="Bone Rush" />
+            <entry key="0xC7" value="Lock-On" />
+            <entry key="0xC8" value="Outrage" />
+            <entry key="0xC9" value="Sandstorm" />
+            <entry key="0xCA" value="Giga Drain" />
+            <entry key="0xCB" value="Endure" />
+            <entry key="0xCC" value="Charm" />
+            <entry key="0xCD" value="Rollout" />
+            <entry key="0xCE" value="False Swipe" />
+            <entry key="0xCF" value="Swagger" />
+            <entry key="0xD0" value="Milk Drink" />
+            <entry key="0xD1" value="Spark" />
+            <entry key="0xD2" value="Fury Cutter" />
+            <entry key="0xD3" value="Steel Wing" />
+            <entry key="0xD4" value="Mean Look" />
+            <entry key="0xD5" value="Attract" />
+            <entry key="0xD6" value="Sleep Talk" />
+            <entry key="0xD7" value="Heal Bell" />
+            <entry key="0xD8" value="Return" />
+            <entry key="0xD9" value="Present" />
+            <entry key="0xDA" value="Frustration" />
+            <entry key="0xDB" value="Safeguard" />
+            <entry key="0xDC" value="Pain Split" />
+            <entry key="0xDD" value="Sacred Fire" />
+            <entry key="0xDE" value="Magnitude" />
+            <entry key="0xDF" value="DynamicPunch" />
+            <entry key="0xE0" value="Megahorn" />
+            <entry key="0xE1" value="DragonBreath" />
+            <entry key="0xE2" value="Baton Pass" />
+            <entry key="0xE3" value="Encore" />
+            <entry key="0xE4" value="Pursuit" />
+            <entry key="0xE5" value="Rapid Spin" />
+            <entry key="0xE6" value="Sweet Scent" />
+            <entry key="0xE7" value="Iron Tail" />
+            <entry key="0xE8" value="Metal Claw" />
+            <entry key="0xE9" value="Vital Throw" />
+            <entry key="0xEA" value="Morning Sun" />
+            <entry key="0xEB" value="Synthesis" />
+            <entry key="0xEC" value="Moonlight" />
+            <entry key="0xED" value="Hidden Power" />
+            <entry key="0xEE" value="Cross Chop" />
+            <entry key="0xEF" value="Twister" />
+            <entry key="0xF0" value="Rain Dance" />
+            <entry key="0xF1" value="Sunny Day" />
+            <entry key="0xF2" value="Crunch" />
+            <entry key="0xF3" value="Mirror Coat" />
+            <entry key="0xF4" value="Psych Up" />
+            <entry key="0xF5" value="Extremespeed" />
+            <entry key="0xF6" value="Ancientpower" />
+            <entry key="0xF7" value="Shadow Ball" />
+            <entry key="0xF8" value="Future Sight" />
+            <entry key="0xF9" value="Rock Smash" />
+            <entry key="0xFA" value="Whirlpool" />
+            <entry key="0xFB" value="Beat Up" />
+        </moves>
+        <items>
+            <entry key="0x00" />
+            <entry key="0x01" value="Master Ball" />
+            <entry key="0x02" value="Ultra Ball" />
+            <entry key="0x03" value="Brightpowder" />
+            <entry key="0x04" value="Great Ball" />
+            <entry key="0x05" value="Poke Ball" />
+            <entry key="0x06" value="Town Map" />
+            <entry key="0x07" value="Bicycle" />
+            <entry key="0x08" value="Moon Stone" />
+            <entry key="0x09" value="Antidote" />
+            <entry key="0x0A" value="Burn Heal" />
+            <entry key="0x0B" value="Ice Heal" />
+            <entry key="0x0C" value="Awakening" />
+            <entry key="0x0D" value="Parlyz Heal" />
+            <entry key="0x0E" value="Full Restore" />
+            <entry key="0x0F" value="Max Potion" />
+            <entry key="0x10" value="Hyper Potion" />
+            <entry key="0x11" value="Super Potion" />
+            <entry key="0x12" value="Potion" />
+            <entry key="0x13" value="Escape Rope" />
+            <entry key="0x14" value="Repel" />
+            <entry key="0x15" value="Max Elixer" />
+            <entry key="0x16" value="Fire Stone" />
+            <entry key="0x17" value="Thunderstone" />
+            <entry key="0x18" value="Water Stone" />
+            <entry key="0x19" value="Teru-Sama" />
+            <entry key="0x1A" value="HP Up" />
+            <entry key="0x1B" value="Protein" />
+            <entry key="0x1C" value="Iron" />
+            <entry key="0x1D" value="Carbos" />
+            <entry key="0x1E" value="Lucky Punch" />
+            <entry key="0x1F" value="Calcium" />
+            <entry key="0x20" value="Rare Candy" />
+            <entry key="0x21" value="X Accuracy" />
+            <entry key="0x22" value="Leaf Stone" />
+            <entry key="0x23" value="Metal Powder" />
+            <entry key="0x24" value="Nugget" />
+            <entry key="0x25" value="Poke Doll" />
+            <entry key="0x26" value="Full Heal" />
+            <entry key="0x27" value="Revive" />
+            <entry key="0x28" value="Max Revive" />
+            <entry key="0x29" value="Guard Spec." />
+            <entry key="0x2A" value="Super Repel" />
+            <entry key="0x2B" value="Max Repel" />
+            <entry key="0x2C" value="Dire Hit" />
+            <entry key="0x2D" value="Teru-Sama" />
+            <entry key="0x2E" value="Fresh Water" />
+            <entry key="0x2F" value="Soda Pop" />
+            <entry key="0x30" value="Lemonade" />
+            <entry key="0x31" value="X Attack" />
+            <entry key="0x32" value="Teru-Sama" />
+            <entry key="0x33" value="X Defend" />
+            <entry key="0x34" value="X Speed" />
+            <entry key="0x35" value="X Special" />
+            <entry key="0x36" value="Coin Case" />
+            <entry key="0x37" value="Itemfinder" />
+            <entry key="0x38" value="Poke Flute" />
+            <entry key="0x39" value="Exp. Share" />
+            <entry key="0x3A" value="Old Rod" />
+            <entry key="0x3B" value="Good Rod" />
+            <entry key="0x3C" value="Silver Leaf" />
+            <entry key="0x3D" value="Super Rod" />
+            <entry key="0x3E" value="PP Up" />
+            <entry key="0x3F" value="Ether" />
+            <entry key="0x40" value="Max Ether" />
+            <entry key="0x41" value="Elixer" />
+            <entry key="0x42" value="Red Scale" />
+            <entry key="0x43" value="SecretPotion" />
+            <entry key="0x44" value="S.S. Ticket" />
+            <entry key="0x45" value="Mystery Egg" />
+            <entry key="0x46" value="Clear Bell" />
+            <entry key="0x47" value="Silver Wing" />
+            <entry key="0x48" value="Moomoo Milk" />
+            <entry key="0x49" value="Quick Claw" />
+            <entry key="0x4A" value="Psncureberry" />
+            <entry key="0x4B" value="Gold Leaf" />
+            <entry key="0x4C" value="Soft Sand" />
+            <entry key="0x4D" value="Sharp Beak" />
+            <entry key="0x4E" value="Przcureberry" />
+            <entry key="0x4F" value="Burnt Berry" />
+            <entry key="0x50" value="Ice Berry" />
+            <entry key="0x51" value="Poison Barb" />
+            <entry key="0x52" value="King's Rock" />
+            <entry key="0x53" value="Bitter Berry" />
+            <entry key="0x54" value="Mint Berry" />
+            <entry key="0x55" value="Red Apricorn" />
+            <entry key="0x56" value="Tinymushroom" />
+            <entry key="0x57" value="Big Mushroom" />
+            <entry key="0x58" value="Silverpowder" />
+            <entry key="0x59" value="Blu Apricorn" />
+            <entry key="0x5A" value="Teru-Sama" />
+            <entry key="0x5B" value="Amulet Coin" />
+            <entry key="0x5C" value="Ylw Apricorn" />
+            <entry key="0x5D" value="Grn Apricorn" />
+            <entry key="0x5E" value="Cleanse Tag" />
+            <entry key="0x5F" value="Mystic Water" />
+            <entry key="0x60" value="TwistedSpoon" />
+            <entry key="0x61" value="Wht Apricorn" />
+            <entry key="0x62" value="Blackbelt" />
+            <entry key="0x63" value="Blk Apricorn" />
+            <entry key="0x64" value="Teru-Sama" />
+            <entry key="0x65" value="Pnk Apricorn" />
+            <entry key="0x66" value="Blackglasses" />
+            <entry key="0x67" value="Slowpoketail" />
+            <entry key="0x68" value="Pink Bow" />
+            <entry key="0x69" value="Stick" />
+            <entry key="0x6A" value="Smoke Ball" />
+            <entry key="0x6B" value="NeverMeltIce" />
+            <entry key="0x6C" value="Magnet" />
+            <entry key="0x6D" value="MiracleBerry" />
+            <entry key="0x6E" value="Pearl" />
+            <entry key="0x6F" value="Big Pearl" />
+            <entry key="0x70" value="Everstone" />
+            <entry key="0x71" value="Spell Tag" />
+            <entry key="0x72" value="RageCandyBar" />
+            <entry key="0x73" value="GS Ball" />
+            <entry key="0x74" value="Blue Card" />
+            <entry key="0x75" value="Miracle Seed" />
+            <entry key="0x76" value="Thick Club" />
+            <entry key="0x77" value="Focus Band" />
+            <entry key="0x78" value="Teru-Sama" />
+            <entry key="0x79" value="EnergyPowder" />
+            <entry key="0x7A" value="Energy Root" />
+            <entry key="0x7B" value="Heal Powder" />
+            <entry key="0x7C" value="Revival Herb" />
+            <entry key="0x7D" value="Hard Stone" />
+            <entry key="0x7E" value="Lucky Egg" />
+            <entry key="0x7F" value="Card Key" />
+            <entry key="0x80" value="Machine Part" />
+            <entry key="0x81" value="Egg Ticket" />
+            <entry key="0x82" value="Lost Item" />
+            <entry key="0x83" value="Stardust" />
+            <entry key="0x84" value="Star Piece" />
+            <entry key="0x85" value="Basement Key" />
+            <entry key="0x86" value="Pass" />
+            <entry key="0x87" value="Teru-Sama" />
+            <entry key="0x88" value="Teru-Sama" />
+            <entry key="0x89" value="Teru-Sama" />
+            <entry key="0x8A" value="Charcoal" />
+            <entry key="0x8B" value="Berry Juice" />
+            <entry key="0x8C" value="Scope Lens" />
+            <entry key="0x8D" value="Teru-Sama" />
+            <entry key="0x8E" value="Teru-Sama" />
+            <entry key="0x8F" value="Metal Coat" />
+            <entry key="0x90" value="Dragon Fang" />
+            <entry key="0x91" value="Teru-Sama" />
+            <entry key="0x92" value="Leftovers" />
+            <entry key="0x93" value="Teru-Sama" />
+            <entry key="0x94" value="Teru-Sama" />
+            <entry key="0x95" value="Teru-Sama" />
+            <entry key="0x96" value="Mysteryberry" />
+            <entry key="0x97" value="Dragon Scale" />
+            <entry key="0x98" value="Berserk Gene" />
+            <entry key="0x99" value="Teru-Sama" />
+            <entry key="0x9A" value="Teru-Sama" />
+            <entry key="0x9B" value="Teru-Sama" />
+            <entry key="0x9C" value="Sacred Ash" />
+            <entry key="0x9D" value="Heavy Ball" />
+            <entry key="0x9E" value="Flower Mail" />
+            <entry key="0x9F" value="Level Ball" />
+            <entry key="0xA0" value="Lure Ball" />
+            <entry key="0xA1" value="Fast Ball" />
+            <entry key="0xA2" value="Teru-Sama" />
+            <entry key="0xA3" value="Light Ball" />
+            <entry key="0xA4" value="Friend Ball" />
+            <entry key="0xA5" value="Moon Ball" />
+            <entry key="0xA6" value="Love Ball" />
+            <entry key="0xA7" value="Normal Box" />
+            <entry key="0xA8" value="Gorgeous Box" />
+            <entry key="0xA9" value="Sun Stone" />
+            <entry key="0xAA" value="Polkadot Bow" />
+            <entry key="0xAB" value="Teru-Sama" />
+            <entry key="0xAC" value="Up-Grade" />
+            <entry key="0xAD" value="Berry" />
+            <entry key="0xAE" value="Gold Berry" />
+            <entry key="0xAF" value="Squirtbottle" />
+            <entry key="0xB0" value="Teru-Sama" />
+            <entry key="0xB1" value="Park Ball" />
+            <entry key="0xB2" value="Rainbow Wing" />
+            <entry key="0xB3" value="Teru-Sama" />
+            <entry key="0xB4" value="Brick Piece" />
+            <entry key="0xB5" value="Surf Mail" />
+            <entry key="0xB6" value="Litebluemail" />
+            <entry key="0xB7" value="Portraitmail" />
+            <entry key="0xB8" value="Lovely Mail" />
+            <entry key="0xB9" value="Eon Mail" />
+            <entry key="0xBA" value="Morph Mail" />
+            <entry key="0xBB" value="Bluesky Mail" />
+            <entry key="0xBC" value="Music Mail" />
+            <entry key="0xBD" value="Mirage Mail" />
+            <entry key="0xBE" value="Teru-Sama" />
+        </items>
+        <pokemonSpecies>
+            <entry key="0x00" />
+            <entry key="0x01" value="Bulbasaur" />
+            <entry key="0x02" value="Ivysaur" />
+            <entry key="0x03" value="Venusaur" />
+            <entry key="0x04" value="Charmander" />
+            <entry key="0x05" value="Charmeleon" />
+            <entry key="0x06" value="Charizard" />
+            <entry key="0x07" value="Squirtle" />
+            <entry key="0x08" value="Wartortle" />
+            <entry key="0x09" value="Blastoise" />
+            <entry key="0x0A" value="Caterpie" />
+            <entry key="0x0B" value="Metapod" />
+            <entry key="0x0C" value="Butterfree" />
+            <entry key="0x0D" value="Weedle" />
+            <entry key="0x0E" value="Kakuna" />
+            <entry key="0x0F" value="Beedrill" />
+            <entry key="0x10" value="Pidgey" />
+            <entry key="0x11" value="Pidgeotto" />
+            <entry key="0x12" value="Pidgeot" />
+            <entry key="0x13" value="Rattata" />
+            <entry key="0x14" value="Raticate" />
+            <entry key="0x15" value="Spearow" />
+            <entry key="0x16" value="Fearow" />
+            <entry key="0x17" value="Ekans" />
+            <entry key="0x18" value="Arbok" />
+            <entry key="0x19" value="Pikachu" />
+            <entry key="0x1A" value="Raichu" />
+            <entry key="0x1B" value="Sandshrew" />
+            <entry key="0x1C" value="Sandslash" />
+            <entry key="0x1D" value="Nidoran-F" />
+            <entry key="0x1E" value="Nidorina" />
+            <entry key="0x1F" value="Nidoqueen" />
+            <entry key="0x20" value="Nidoran-M" />
+            <entry key="0x21" value="Nidorino" />
+            <entry key="0x22" value="Nidoking" />
+            <entry key="0x23" value="Clefairy" />
+            <entry key="0x24" value="Clefable" />
+            <entry key="0x25" value="Vulpix" />
+            <entry key="0x26" value="Ninetales" />
+            <entry key="0x27" value="Jigglypuff" />
+            <entry key="0x28" value="Wigglytuff" />
+            <entry key="0x29" value="Zubat" />
+            <entry key="0x2A" value="Golbat" />
+            <entry key="0x2B" value="Oddish" />
+            <entry key="0x2C" value="Gloom" />
+            <entry key="0x2D" value="Vileplume" />
+            <entry key="0x2E" value="Paras" />
+            <entry key="0x2F" value="Parasect" />
+            <entry key="0x30" value="Venonat" />
+            <entry key="0x31" value="Venomoth" />
+            <entry key="0x32" value="Diglett" />
+            <entry key="0x33" value="Dugtrio" />
+            <entry key="0x34" value="Meowth" />
+            <entry key="0x35" value="Persian" />
+            <entry key="0x36" value="Psyduck" />
+            <entry key="0x37" value="Golduck" />
+            <entry key="0x38" value="Mankey" />
+            <entry key="0x39" value="Primeape" />
+            <entry key="0x3A" value="Growlithe" />
+            <entry key="0x3B" value="Arcanine" />
+            <entry key="0x3C" value="Poliwag" />
+            <entry key="0x3D" value="Poliwhirl" />
+            <entry key="0x3E" value="Poliwrath" />
+            <entry key="0x3F" value="Abra" />
+            <entry key="0x40" value="Kadabra" />
+            <entry key="0x41" value="Alakazam" />
+            <entry key="0x42" value="Machop" />
+            <entry key="0x43" value="Machoke" />
+            <entry key="0x44" value="Machamp" />
+            <entry key="0x45" value="Bellsprout" />
+            <entry key="0x46" value="Weepinbell" />
+            <entry key="0x47" value="Victreebel" />
+            <entry key="0x48" value="Tentacool" />
+            <entry key="0x49" value="Tentacruel" />
+            <entry key="0x4A" value="Geodude" />
+            <entry key="0x4B" value="Graveler" />
+            <entry key="0x4C" value="Golem" />
+            <entry key="0x4D" value="Ponyta" />
+            <entry key="0x4E" value="Rapidash" />
+            <entry key="0x4F" value="Slowpoke" />
+            <entry key="0x50" value="Slowbro" />
+            <entry key="0x51" value="Magnemite" />
+            <entry key="0x52" value="Magneton" />
+            <entry key="0x53" value="Farfetch'd" />
+            <entry key="0x54" value="Doduo" />
+            <entry key="0x55" value="Dodrio" />
+            <entry key="0x56" value="Seel" />
+            <entry key="0x57" value="Dewgong" />
+            <entry key="0x58" value="Grimer" />
+            <entry key="0x59" value="Muk" />
+            <entry key="0x5A" value="Shellder" />
+            <entry key="0x5B" value="Cloyster" />
+            <entry key="0x5C" value="Gastly" />
+            <entry key="0x5D" value="Haunter" />
+            <entry key="0x5E" value="Gengar" />
+            <entry key="0x5F" value="Onix" />
+            <entry key="0x60" value="Drowzee" />
+            <entry key="0x61" value="Hypno" />
+            <entry key="0x62" value="Krabby" />
+            <entry key="0x63" value="Kingler" />
+            <entry key="0x64" value="Voltorb" />
+            <entry key="0x65" value="Electrode" />
+            <entry key="0x66" value="Exeggcute" />
+            <entry key="0x67" value="Exeggutor" />
+            <entry key="0x68" value="Cubone" />
+            <entry key="0x69" value="Marowak" />
+            <entry key="0x6A" value="Hitmonlee" />
+            <entry key="0x6B" value="Hitmonchan" />
+            <entry key="0x6C" value="Lickitung" />
+            <entry key="0x6D" value="Koffing" />
+            <entry key="0x6E" value="Weezing" />
+            <entry key="0x6F" value="Rhyhorn" />
+            <entry key="0x70" value="Rhydon" />
+            <entry key="0x71" value="Chansey" />
+            <entry key="0x72" value="Tangela" />
+            <entry key="0x73" value="Kangaskhan" />
+            <entry key="0x74" value="Horsea" />
+            <entry key="0x75" value="Seadra" />
+            <entry key="0x76" value="Goldeen" />
+            <entry key="0x77" value="Seaking" />
+            <entry key="0x78" value="Staryu" />
+            <entry key="0x79" value="Starmie" />
+            <entry key="0x7A" value="Mr. Mime" />
+            <entry key="0x7B" value="Scyther" />
+            <entry key="0x7C" value="Jynx" />
+            <entry key="0x7D" value="Electabuzz" />
+            <entry key="0x7E" value="Magmar" />
+            <entry key="0x7F" value="Pinsir" />
+            <entry key="0x80" value="Tauros" />
+            <entry key="0x81" value="Magikarp" />
+            <entry key="0x82" value="Gyarados" />
+            <entry key="0x83" value="Lapras" />
+            <entry key="0x84" value="Ditto" />
+            <entry key="0x85" value="Eevee" />
+            <entry key="0x86" value="Vaporeon" />
+            <entry key="0x87" value="Jolteon" />
+            <entry key="0x88" value="Flareon" />
+            <entry key="0x89" value="Porygon" />
+            <entry key="0x8A" value="Omanyte" />
+            <entry key="0x8B" value="Omastar" />
+            <entry key="0x8C" value="Kabuto" />
+            <entry key="0x8D" value="Kabutops" />
+            <entry key="0x8E" value="Aerodactyl" />
+            <entry key="0x8F" value="Snorlax" />
+            <entry key="0x90" value="Articuno" />
+            <entry key="0x91" value="Zapdos" />
+            <entry key="0x92" value="Moltres" />
+            <entry key="0x93" value="Dratini" />
+            <entry key="0x94" value="Dragonair" />
+            <entry key="0x95" value="Dragonite" />
+            <entry key="0x96" value="Mewtwo" />
+            <entry key="0x97" value="Mew" />
+            <entry key="0x98" value="Chikorita" />
+            <entry key="0x99" value="Bayleef" />
+            <entry key="0x9A" value="Meganium" />
+            <entry key="0x9B" value="Cyndaquil" />
+            <entry key="0x9C" value="Quilava" />
+            <entry key="0x9D" value="Typhlosion" />
+            <entry key="0x9E" value="Totodile" />
+            <entry key="0x9F" value="Croconaw" />
+            <entry key="0xA0" value="Feraligatr" />
+            <entry key="0xA1" value="Sentret" />
+            <entry key="0xA2" value="Furret" />
+            <entry key="0xA3" value="Hoothoot" />
+            <entry key="0xA4" value="Noctowl" />
+            <entry key="0xA5" value="Ledyba" />
+            <entry key="0xA6" value="Ledian" />
+            <entry key="0xA7" value="Spinarak" />
+            <entry key="0xA8" value="Ariados" />
+            <entry key="0xA9" value="Crobat" />
+            <entry key="0xAA" value="Chinchou" />
+            <entry key="0xAB" value="Lanturn" />
+            <entry key="0xAC" value="Pichu" />
+            <entry key="0xAD" value="Cleffa" />
+            <entry key="0xAE" value="Igglybuff" />
+            <entry key="0xAF" value="Togepi" />
+            <entry key="0xB0" value="Togetic" />
+            <entry key="0xB1" value="Natu" />
+            <entry key="0xB2" value="Xatu" />
+            <entry key="0xB3" value="Mareep" />
+            <entry key="0xB4" value="Flaaffy" />
+            <entry key="0xB5" value="Ampharos" />
+            <entry key="0xB6" value="Bellossom" />
+            <entry key="0xB7" value="Marill" />
+            <entry key="0xB8" value="Azumarill" />
+            <entry key="0xB9" value="Sudowoodo" />
+            <entry key="0xBA" value="Politoed" />
+            <entry key="0xBB" value="Hoppip" />
+            <entry key="0xBC" value="Skiploom" />
+            <entry key="0xBD" value="Jumpluff" />
+            <entry key="0xBE" value="Aipom" />
+            <entry key="0xBF" value="Sunkern" />
+            <entry key="0xC0" value="Sunflora" />
+            <entry key="0xC1" value="Yanma" />
+            <entry key="0xC2" value="Wooper" />
+            <entry key="0xC3" value="Quagsire" />
+            <entry key="0xC4" value="Espeon" />
+            <entry key="0xC5" value="Umbreon" />
+            <entry key="0xC6" value="Murkrow" />
+            <entry key="0xC7" value="Slowking" />
+            <entry key="0xC8" value="Misdreavus" />
+            <entry key="0xC9" value="Unown" />
+            <entry key="0xCA" value="Wobbuffet" />
+            <entry key="0xCB" value="Girafarig" />
+            <entry key="0xCC" value="Pineco" />
+            <entry key="0xCD" value="Forretress" />
+            <entry key="0xCE" value="Dunsparce" />
+            <entry key="0xCF" value="Gligar" />
+            <entry key="0xD0" value="Steelix" />
+            <entry key="0xD1" value="Snubbull" />
+            <entry key="0xD2" value="Granbull" />
+            <entry key="0xD3" value="Qwilfish" />
+            <entry key="0xD4" value="Scizor" />
+            <entry key="0xD5" value="Shuckle" />
+            <entry key="0xD6" value="Heracross" />
+            <entry key="0xD7" value="Sneasel" />
+            <entry key="0xD8" value="Teddiursa" />
+            <entry key="0xD9" value="Ursaring" />
+            <entry key="0xDA" value="Slugma" />
+            <entry key="0xDB" value="Magcargo" />
+            <entry key="0xDC" value="Swinub" />
+            <entry key="0xDD" value="Piloswine" />
+            <entry key="0xDE" value="Corsola" />
+            <entry key="0xDF" value="Remoraid" />
+            <entry key="0xE0" value="Octillery" />
+            <entry key="0xE1" value="Delibird" />
+            <entry key="0xE2" value="Mantine" />
+            <entry key="0xE3" value="Skarmory" />
+            <entry key="0xE4" value="Houndour" />
+            <entry key="0xE5" value="Houndoom" />
+            <entry key="0xE6" value="Kingdra" />
+            <entry key="0xE7" value="Phanpy" />
+            <entry key="0xE8" value="Donphan" />
+            <entry key="0xE9" value="Porygon2" />
+            <entry key="0xEA" value="Stantler" />
+            <entry key="0xEB" value="Smeargle" />
+            <entry key="0xEC" value="Tyrogue" />
+            <entry key="0xED" value="Hitmontop" />
+            <entry key="0xEE" value="Smoochum" />
+            <entry key="0xEF" value="Elekid" />
+            <entry key="0xF0" value="Magby" />
+            <entry key="0xF1" value="Miltank" />
+            <entry key="0xF2" value="Blissey" />
+            <entry key="0xF3" value="Raikou" />
+            <entry key="0xF4" value="Entei" />
+            <entry key="0xF5" value="Suicune" />
+            <entry key="0xF6" value="Larvitar" />
+            <entry key="0xF7" value="Pupitar" />
+            <entry key="0xF8" value="Tyranitar" />
+            <entry key="0xF9" value="Lugia" />
+            <entry key="0xFA" value="Ho-oh" />
+            <entry key="0xFB" value="Celebi" />
+        </pokemonSpecies>
+        <pokemonPokedexNumbers type="number">
+            <entry key="0x00" />
+            <entry key="0x01" value="1" />
+            <entry key="0x02" value="2" />
+            <entry key="0x03" value="3" />
+            <entry key="0x04" value="4" />
+            <entry key="0x05" value="5" />
+            <entry key="0x06" value="6" />
+            <entry key="0x07" value="7" />
+            <entry key="0x08" value="8" />
+            <entry key="0x09" value="9" />
+            <entry key="0x0A" value="10" />
+            <entry key="0x0B" value="11" />
+            <entry key="0x0C" value="12" />
+            <entry key="0x0D" value="13" />
+            <entry key="0x0E" value="14" />
+            <entry key="0x0F" value="15" />
+            <entry key="0x10" value="16" />
+            <entry key="0x11" value="17" />
+            <entry key="0x12" value="18" />
+            <entry key="0x13" value="19" />
+            <entry key="0x14" value="20" />
+            <entry key="0x15" value="21" />
+            <entry key="0x16" value="22" />
+            <entry key="0x17" value="23" />
+            <entry key="0x18" value="24" />
+            <entry key="0x19" value="25" />
+            <entry key="0x1A" value="26" />
+            <entry key="0x1B" value="27" />
+            <entry key="0x1C" value="28" />
+            <entry key="0x1D" value="29" />
+            <entry key="0x1E" value="30" />
+            <entry key="0x1F" value="31" />
+            <entry key="0x20" value="32" />
+            <entry key="0x21" value="33" />
+            <entry key="0x22" value="34" />
+            <entry key="0x23" value="35" />
+            <entry key="0x24" value="36" />
+            <entry key="0x25" value="37" />
+            <entry key="0x26" value="38" />
+            <entry key="0x27" value="39" />
+            <entry key="0x28" value="40" />
+            <entry key="0x29" value="41" />
+            <entry key="0x2A" value="42" />
+            <entry key="0x2B" value="43" />
+            <entry key="0x2C" value="44" />
+            <entry key="0x2D" value="45" />
+            <entry key="0x2E" value="46" />
+            <entry key="0x2F" value="47" />
+            <entry key="0x30" value="48" />
+            <entry key="0x31" value="49" />
+            <entry key="0x32" value="50" />
+            <entry key="0x33" value="51" />
+            <entry key="0x34" value="52" />
+            <entry key="0x35" value="53" />
+            <entry key="0x36" value="54" />
+            <entry key="0x37" value="55" />
+            <entry key="0x38" value="56" />
+            <entry key="0x39" value="57" />
+            <entry key="0x3A" value="58" />
+            <entry key="0x3B" value="59" />
+            <entry key="0x3C" value="60" />
+            <entry key="0x3D" value="61" />
+            <entry key="0x3E" value="62" />
+            <entry key="0x3F" value="63" />
+            <entry key="0x40" value="64" />
+            <entry key="0x41" value="65" />
+            <entry key="0x42" value="66" />
+            <entry key="0x43" value="67" />
+            <entry key="0x44" value="68" />
+            <entry key="0x45" value="69" />
+            <entry key="0x46" value="70" />
+            <entry key="0x47" value="71" />
+            <entry key="0x48" value="72" />
+            <entry key="0x49" value="73" />
+            <entry key="0x4A" value="74" />
+            <entry key="0x4B" value="75" />
+            <entry key="0x4C" value="76" />
+            <entry key="0x4D" value="77" />
+            <entry key="0x4E" value="78" />
+            <entry key="0x4F" value="79" />
+            <entry key="0x50" value="80" />
+            <entry key="0x51" value="81" />
+            <entry key="0x52" value="82" />
+            <entry key="0x53" value="83" />
+            <entry key="0x54" value="84" />
+            <entry key="0x55" value="85" />
+            <entry key="0x56" value="86" />
+            <entry key="0x57" value="87" />
+            <entry key="0x58" value="88" />
+            <entry key="0x59" value="89" />
+            <entry key="0x5A" value="90" />
+            <entry key="0x5B" value="91" />
+            <entry key="0x5C" value="92" />
+            <entry key="0x5D" value="93" />
+            <entry key="0x5E" value="94" />
+            <entry key="0x5F" value="95" />
+            <entry key="0x60" value="96" />
+            <entry key="0x61" value="97" />
+            <entry key="0x62" value="98" />
+            <entry key="0x63" value="99" />
+            <entry key="0x64" value="100" />
+            <entry key="0x65" value="101" />
+            <entry key="0x66" value="102" />
+            <entry key="0x67" value="103" />
+            <entry key="0x68" value="104" />
+            <entry key="0x69" value="105" />
+            <entry key="0x6A" value="106" />
+            <entry key="0x6B" value="107" />
+            <entry key="0x6C" value="108" />
+            <entry key="0x6D" value="109" />
+            <entry key="0x6E" value="110" />
+            <entry key="0x6F" value="111" />
+            <entry key="0x70" value="112" />
+            <entry key="0x71" value="113" />
+            <entry key="0x72" value="114" />
+            <entry key="0x73" value="115" />
+            <entry key="0x74" value="116" />
+            <entry key="0x75" value="117" />
+            <entry key="0x76" value="118" />
+            <entry key="0x77" value="119" />
+            <entry key="0x78" value="120" />
+            <entry key="0x79" value="121" />
+            <entry key="0x7A" value="122" />
+            <entry key="0x7B" value="123" />
+            <entry key="0x7C" value="124" />
+            <entry key="0x7D" value="125" />
+            <entry key="0x7E" value="126" />
+            <entry key="0x7F" value="127" />
+            <entry key="0x80" value="128" />
+            <entry key="0x81" value="129" />
+            <entry key="0x82" value="130" />
+            <entry key="0x83" value="131" />
+            <entry key="0x84" value="132" />
+            <entry key="0x85" value="133" />
+            <entry key="0x86" value="134" />
+            <entry key="0x87" value="135" />
+            <entry key="0x88" value="136" />
+            <entry key="0x89" value="137" />
+            <entry key="0x8A" value="138" />
+            <entry key="0x8B" value="139" />
+            <entry key="0x8C" value="140" />
+            <entry key="0x8D" value="141" />
+            <entry key="0x8E" value="142" />
+            <entry key="0x8F" value="143" />
+            <entry key="0x90" value="144" />
+            <entry key="0x91" value="145" />
+            <entry key="0x92" value="146" />
+            <entry key="0x93" value="147" />
+            <entry key="0x94" value="148" />
+            <entry key="0x95" value="149" />
+            <entry key="0x96" value="150" />
+            <entry key="0x97" value="151" />
+            <entry key="0x98" value="152" />
+            <entry key="0x99" value="153" />
+            <entry key="0x9A" value="154" />
+            <entry key="0x9B" value="155" />
+            <entry key="0x9C" value="156" />
+            <entry key="0x9D" value="157" />
+            <entry key="0x9E" value="158" />
+            <entry key="0x9F" value="159" />
+            <entry key="0xA0" value="160" />
+            <entry key="0xA1" value="161" />
+            <entry key="0xA2" value="162" />
+            <entry key="0xA3" value="163" />
+            <entry key="0xA4" value="164" />
+            <entry key="0xA5" value="165" />
+            <entry key="0xA6" value="166" />
+            <entry key="0xA7" value="167" />
+            <entry key="0xA8" value="168" />
+            <entry key="0xA9" value="169" />
+            <entry key="0xAA" value="170" />
+            <entry key="0xAB" value="171" />
+            <entry key="0xAC" value="172" />
+            <entry key="0xAD" value="173" />
+            <entry key="0xAE" value="174" />
+            <entry key="0xAF" value="175" />
+            <entry key="0xB0" value="176" />
+            <entry key="0xB1" value="177" />
+            <entry key="0xB2" value="178" />
+            <entry key="0xB3" value="179" />
+            <entry key="0xB4" value="180" />
+            <entry key="0xB5" value="181" />
+            <entry key="0xB6" value="182" />
+            <entry key="0xB7" value="183" />
+            <entry key="0xB8" value="184" />
+            <entry key="0xB9" value="185" />
+            <entry key="0xBA" value="186" />
+            <entry key="0xBB" value="187" />
+            <entry key="0xBC" value="188" />
+            <entry key="0xBD" value="189" />
+            <entry key="0xBE" value="190" />
+            <entry key="0xBF" value="191" />
+            <entry key="0xC0" value="192" />
+            <entry key="0xC1" value="193" />
+            <entry key="0xC2" value="194" />
+            <entry key="0xC3" value="195" />
+            <entry key="0xC4" value="196" />
+            <entry key="0xC5" value="197" />
+            <entry key="0xC6" value="198" />
+            <entry key="0xC7" value="199" />
+            <entry key="0xC8" value="200" />
+            <entry key="0xC9" value="201" />
+            <entry key="0xCA" value="202" />
+            <entry key="0xCB" value="203" />
+            <entry key="0xCC" value="204" />
+            <entry key="0xCD" value="205" />
+            <entry key="0xCE" value="206" />
+            <entry key="0xCF" value="207" />
+            <entry key="0xD0" value="208" />
+            <entry key="0xD1" value="209" />
+            <entry key="0xD2" value="210" />
+            <entry key="0xD3" value="211" />
+            <entry key="0xD4" value="212" />
+            <entry key="0xD5" value="213" />
+            <entry key="0xD6" value="214" />
+            <entry key="0xD7" value="215" />
+            <entry key="0xD8" value="216" />
+            <entry key="0xD9" value="217" />
+            <entry key="0xDA" value="218" />
+            <entry key="0xDB" value="219" />
+            <entry key="0xDC" value="220" />
+            <entry key="0xDD" value="221" />
+            <entry key="0xDE" value="222" />
+            <entry key="0xDF" value="223" />
+            <entry key="0xE0" value="224" />
+            <entry key="0xE1" value="225" />
+            <entry key="0xE2" value="226" />
+            <entry key="0xE3" value="227" />
+            <entry key="0xE4" value="228" />
+            <entry key="0xE5" value="229" />
+            <entry key="0xE6" value="230" />
+            <entry key="0xE7" value="231" />
+            <entry key="0xE8" value="232" />
+            <entry key="0xE9" value="233" />
+            <entry key="0xEA" value="234" />
+            <entry key="0xEB" value="235" />
+            <entry key="0xEC" value="236" />
+            <entry key="0xED" value="237" />
+            <entry key="0xEE" value="238" />
+            <entry key="0xEF" value="239" />
+            <entry key="0xF0" value="240" />
+            <entry key="0xF1" value="241" />
+            <entry key="0xF2" value="242" />
+            <entry key="0xF3" value="243" />
+            <entry key="0xF4" value="244" />
+            <entry key="0xF5" value="245" />
+            <entry key="0xF6" value="246" />
+            <entry key="0xF7" value="247" />
+            <entry key="0xF8" value="248" />
+            <entry key="0xF9" value="249" />
+            <entry key="0xFA" value="250" />
+            <entry key="0xFB" value="251" />
+        </pokemonPokedexNumbers>
+        <mapGroups>
+            <entry key="0x01" value="Olivine" />
+            <entry key="0x02" value="Mahogany" />
+            <entry key="0x03" value="Dungeons" />
+            <entry key="0x04" value="Ecruteak" />
+            <entry key="0x05" value="Blackthorn" />
+            <entry key="0x06" value="Cinnabar" />
+            <entry key="0x07" value="Cerulean" />
+            <entry key="0x08" value="Azalea" />
+            <entry key="0x09" value="Lake of Rage" />
+            <entry key="0x0A" value="Violet" />
+            <entry key="0x0B" value="Goldenrod" />
+            <entry key="0x0C" value="Vermilion" />
+            <entry key="0x0D" value="Pallet" />
+            <entry key="0x0E" value="Pewter" />
+            <entry key="0x0F" value="Fast Ship" />
+            <entry key="0x10" value="Indigo" />
+            <entry key="0x11" value="Fuchsia" />
+            <entry key="0x12" value="Lavender" />
+            <entry key="0x13" value="Silver" />
+            <entry key="0x14" value="Cable Club" />
+            <entry key="0x15" value="Celadon" />
+            <entry key="0x16" value="Cianwood" />
+            <entry key="0x17" value="Viridian" />
+            <entry key="0x18" value="New Bark" />
+            <entry key="0x19" value="Saffron" />
+            <entry key="0x1A" value="Cherrygrove" />
+        </mapGroups>
+        <mapNumber> 
+            <entry key="0x00" />
+        </mapNumber>
+        <textPrompt>
+            <entry key="0x58" value="▼" />
+            <entry key="0xEE" value="▼" />
+        </textPrompt>
+    </references>
+</mapper>
