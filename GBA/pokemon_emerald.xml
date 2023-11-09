@@ -1013,9 +1013,11 @@
         <battleWeather>
             <entry key="0" />
             <entry key="1" value="Rain" />
+	    <entry key="5" value="Rain" />
             <entry key="8" value="Sandstorm" />
             <entry key="24" value="Sandstorm" />
             <entry key="32" value="Sun" />
+	    <entry key="96" value="Sun" />
             <entry key="128" value="Hail" />
         </battleWeather>
         <battleDialogue>
