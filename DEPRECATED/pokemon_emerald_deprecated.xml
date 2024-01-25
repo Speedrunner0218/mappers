@@ -431,6 +431,8 @@ For all new software, please use the paths within 'pokemon_emerald.xml'
       <property name="mapName" type="int" length="2" address="0x20322e4" reference="mapName" />
       <property name="walkRunState" type="int" address="0x2037078" reference="walkRunState"/>
       <property name="safariSteps"  type="int" address="0x2039996" />
+      <property name="disabledEncounters"  type="int" address="0x02038c00" />
+
     </overworld>
     <battle>
       <property name="outcome" type="int" address="0x0202433a" reference="battleOutcome" />
@@ -579,13 +581,21 @@ For all new software, please use the paths within 'pokemon_emerald.xml'
       </eliteFour>   
     </trainers>
     <options>
-      <!-- <property name="textSpeed"   type="int" address="dma_a + 20", 2, 0)" after-read-value-expression="BitRange(x, 2, 0)" /> -->
+      <property name="textSpeed" type="int" address="dma_b + 20" postprocessor-reader="BitRange(x, 2, 0)" />
       <property name="battleAnim"  type="bit" address="dma_b + 21" position="2" />
       <property name="battleStyle" type="bit" address="dma_b + 21" position="1" />
       <property name="sound"       type="bit" address="dma_b + 21" position="0" />
       <property name="buttonMode"  type="int" address="dma_b + 19" />
       <!-- <property name="windowFrame" type="int" address="dma_b + 20, 7, 3)" after-read-value-expression="BitRange(x, 2, 0)" /> -->
     </options>
+    <audio>
+            <property name="overworldmusicID"      type="int" address="0x2037328" length="2" />
+            <property name="musicID"      type="int" address="0x3007420" length="4" />
+            <property name="sound_effect_1" type="int" address="0x030075f0" length="4" />
+            <property name="sound_effect_1_played" type="bit" address="0x030075f4" length="4" position="31" />
+            <property name="sound_effect_2" type="int" address="0x03007630" length="4" />
+            <property name="sound_effect_2_played" type="bit" address="0x03007634" length="4" position="31" />
+        </audio>
     <gameTime>
       <property name="hours"   type="int" address="dma_b + 14" />
       <property name="minutes" type="int" address="dma_b + 16" />
@@ -599,6 +609,10 @@ For all new software, please use the paths within 'pokemon_emerald.xml'
       <property name="callback1" type="int" length="4" address="0x030022c0" reference="mainState" />
       <property name="callback2" type="int" length="4" address="0x030022c4" reference="subState" />
     </pointers>
+    <misc>
+      <property name="rngValue1" type="int" address="0x3005D80" length="4" />
+      <property name="palette5" type="int" address="0x2037724" length="4" reference="palette" />
+    </misc>
     <meta>
 			<property name="generation" type="int" value="3" />
 			<property name="gameName"   type="int" value="Emerald" />
@@ -628,7 +642,6 @@ For all new software, please use the paths within 'pokemon_emerald.xml'
       <entry key="135134613" value="Black Transition #to mart" />
       <entry key="134766793" value="Black Transition #closing pc" />
       <entry key="134766541" value="Black Transition #door" />
-      <entry key="135134565" value="Mart Menu Opening" />
       <entry key="135134565" value="Mart Menu" />
       <entry key="134766589" value="Transition to Overworld" />
       <entry key="135416021" value="Fly Menu" />
@@ -4454,5 +4467,10 @@ For all new software, please use the paths within 'pokemon_emerald.xml'
       <entry key="0x0220" value="ROUTE 119 - HOUSE" />
       <entry key="0x0021" value="ROUTE 124 - DIVING_TREASURE_HUNTERS_HOUSE" />
     </mapName>
+    <palette>
+      <entry key="411332407" value="MAIN MENU" />
+      <entry key="1744306176" value="NEW GAME" />
+      <entry key="900344134" value="RESET" />
+    </palette>
   </references>
 </mapper>

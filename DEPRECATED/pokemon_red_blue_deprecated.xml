@@ -24,9 +24,9 @@ For all new software, please use the paths within 'pokemon_red_and_blue.xml'
 			<property name="maxHp"   address="address + 34" type="int" length="2" />
 			<property name="hp"      address="address + 1" type="int" length="2" />
 			<property name="attack"  address="address + 36" type="int" length="2" description="The Attack stat as it appears in the Pokemon's summary page in game" />
-			<property name="defense" address="address + 38" type="int" length="2" description="The Attack stat as it appears in the Pokemon's summary page in game" />
-			<property name="speed"   address="address + 40" type="int" length="2" description="The Attack stat as it appears in the Pokemon's summary page in game" />
-			<property name="special" address="address + 42" type="int" length="2" description="The Attack stat as it appears in the Pokemon's summary page in game" />
+			<property name="defense" address="address + 38" type="int" length="2" description="The Defense stat as it appears in the Pokemon's summary page in game" />
+			<property name="speed"   address="address + 40" type="int" length="2" description="The Speed stat as it appears in the Pokemon's summary page in game" />
+			<property name="special" address="address + 42" type="int" length="2" description="The Special stat as it appears in the Pokemon's summary page in game" />
 			<property name="dvAttack"  address="address + 27" type="int" after-read-value-expression="(x - (x % 16))/16" />
 			<property name="dvDefense" address="address + 27" type="int" after-read-value-expression="x % 16" />
 			<property name="dvSpeed"   address="address + 28" type="int" after-read-value-expression="(x - (x % 16))/16" />
